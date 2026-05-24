@@ -33,8 +33,6 @@ public sealed partial class MainWindow : Window, INotifyPropertyChanged
     public new event PropertyChangedEventHandler? PropertyChanged;
 
 
-    private DemoTradingViewChart ActiveChart => SelectedDemoIndex == 1 ? PriceChart : CandleChart;
-
     public MainWindow()
     {
         InitializeComponent();
@@ -126,13 +124,12 @@ public sealed partial class MainWindow : Window, INotifyPropertyChanged
     [RequiresUnreferencedCode("Calls Avalonia.Data.Binding.Binding(String, BindingMode)")]
     private void ConfigureCharts()
     {
-        CandleChart.Bind(
-            global::TradingViewChart.TradingViewChart.HoveredTimeProperty,
-            new Binding(nameof(CandleHoveredTime)) { Source = this, Mode = BindingMode.TwoWay });
-        PriceChart.Bind(
-            global::TradingViewChart.TradingViewChart.HoveredTimeProperty,
-            new Binding(nameof(PriceHoveredTime)) { Source = this, Mode = BindingMode.TwoWay });
-
+        TradingViewChart.HoveredTimeProperty.Changed.Subscribe(args =>
+            CandleHoveredTime = args.NewValue.Value
+        );
+        TradingViewChart.HoveredTimeProperty.Changed.Subscribe(args =>
+            PriceHoveredTime = args.NewValue.Value
+        );
         CandleChart.CandleSource = _candleData;
         CandleChart.Markers = _candleMarkers;
         CandleChart.Indicators.Add(new MaIndicator(5, 10, 20, 60));
