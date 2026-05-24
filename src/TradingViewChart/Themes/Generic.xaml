@@ -1,0 +1,45 @@
+<Styles
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TradingViewChart">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+          <SolidColorBrush x:Key="TradingChartBackgroundBrush">#FFF8FAFC</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartGridBrush">#1F334155</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTextBrush">#FF0F172A</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTooltipBackgroundBrush">#F2FFFFFF</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTooltipTextBrush">#FF0F172A</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartUpBrush">#FFE11D48</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartDownBrush">#FF16A34A</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartLimitUpBrush">#FFB91C1C</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartLimitDownBrush">#FF166534</SolidColorBrush>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+          <SolidColorBrush x:Key="TradingChartBackgroundBrush">#FF0B1220</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartGridBrush">#33475F7A</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTextBrush">#FFE2E8F0</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTooltipBackgroundBrush">#F21E293B</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartTooltipTextBrush">#FFF8FAFC</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartUpBrush">#FFFF5F7A</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartDownBrush">#FF34D399</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartLimitUpBrush">#FFFF2D55</SolidColorBrush>
+          <SolidColorBrush x:Key="TradingChartLimitDownBrush">#FF10B981</SolidColorBrush>
+        </ResourceDictionary>
+      </ResourceDictionary.ThemeDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <Style Selector="local|TradingViewChart">
+    <Setter Property="ChartBackgroundBrush" Value="{DynamicResource TradingChartBackgroundBrush}" />
+    <Setter Property="GridLineBrush" Value="{DynamicResource TradingChartGridBrush}" />
+    <Setter Property="AxisTextBrush" Value="{DynamicResource TradingChartTextBrush}" />
+    <Setter Property="TooltipBackgroundBrush" Value="{DynamicResource TradingChartTooltipBackgroundBrush}" />
+    <Setter Property="TooltipTextBrush" Value="{DynamicResource TradingChartTooltipTextBrush}" />
+    <Setter Property="UpBrush" Value="{DynamicResource TradingChartUpBrush}" />
+    <Setter Property="DownBrush" Value="{DynamicResource TradingChartDownBrush}" />
+    <Setter Property="LimitUpBrush" Value="{DynamicResource TradingChartLimitUpBrush}" />
+    <Setter Property="LimitDownBrush" Value="{DynamicResource TradingChartLimitDownBrush}" />
+  </Style>
+</Styles>

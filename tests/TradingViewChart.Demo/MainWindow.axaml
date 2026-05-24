@@ -1,0 +1,104 @@
+<Window
+    x:Class="TradingViewChart.Demo.MainWindow"
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:demo="clr-namespace:TradingViewChart.Demo"
+    Title="TradingViewChart Demo"
+    Width="1280"
+    Height="820"
+    MinWidth="960"
+    MinHeight="640">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border
+            Grid.Row="0"
+            Padding="16,12"
+            Background="{DynamicResource ThemeControlMidBrush}">
+            <StackPanel Spacing="10">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                    <StackPanel Spacing="4">
+                        <TextBlock
+                            FontSize="20"
+                            FontWeight="Bold"
+                            Text="TradingViewChart Demo" />
+                        <TextBlock Opacity="0.8" Text="滚轮缩放，左键拖动平移，左右方向键移动十字线，右键由宿主提供上下文菜单；可切换 CandleSource / PriceSource 并实时增删改数据。" />
+                        <WrapPanel>
+                            <TextBlock
+                                Margin="0,0,16,0"
+                                Opacity="0.8"
+                                Text="{Binding CurrentHoveredTimeText}" />
+                            <TextBlock
+                                Margin="0,0,16,0"
+                                Opacity="0.8"
+                                Text="{Binding CurrentDemoSummaryText}" />
+                            <TextBlock Opacity="0.8" Text="{Binding FpsText}" />
+                        </WrapPanel>
+                    </StackPanel>
+                    <Button
+                        Grid.Column="1"
+                        Click="OnToggleThemeClick"
+                        Content="切换明暗" />
+                </Grid>
+
+                <WrapPanel
+                    ItemHeight="32"
+                    ItemSpacing="5"
+                    ItemWidth="160"
+                    Orientation="Horizontal">
+                    <ComboBox x:Name="CrosshairModeComboBox">
+                        <ComboBoxItem Content="Crosshair: FixedCorner" />
+                        <ComboBoxItem Content="Crosshair: FollowMouse" />
+                    </ComboBox>
+                    <ComboBox x:Name="CrosshairValueModeComboBox">
+                        <ComboBoxItem Content="SnapToData" />
+                        <ComboBoxItem Content="FollowPointer" />
+                    </ComboBox>
+                    <ComboBox x:Name="XAxisFormatComboBox">
+                        <ComboBoxItem Content="时间: yyyy-MM-dd" />
+                        <ComboBoxItem Content="时间: MM-dd" />
+                        <ComboBoxItem Content="时间: yyyy-MM-dd HH:mm" />
+                    </ComboBox>
+                    <Button
+                        Width="120"
+                        Click="OnToggleMarkersClick"
+                        Content="切换标记" />
+                    <Button
+                        Width="120"
+                        Click="OnAddLatestClick"
+                        Content="追加最新数据" />
+                    <Button
+                        Width="120"
+                        Click="OnUpdateLatestClick"
+                        Content="修改最新数据" />
+                    <Button
+                        Width="120"
+                        Click="OnDeleteLatestClick"
+                        Content="删除最新数据" />
+                </WrapPanel>
+            </StackPanel>
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Margin="12"
+            Padding="8"
+            BorderBrush="{DynamicResource ThemeControlLowBrush}"
+            BorderThickness="1"
+            CornerRadius="8">
+            <TabControl x:Name="DemoTabs" SelectionChanged="OnDemoTabSelectionChanged">
+                <TabItem Header="CandleSource">
+                    <demo:DemoTradingViewChart x:Name="CandleChart" />
+                </TabItem>
+                <TabItem Header="PriceSource">
+                    <demo:DemoTradingViewChart x:Name="PriceChart" />
+                </TabItem>
+            </TabControl>
+        </Border>
+
+        <Border
+            Grid.Row="2"
+            Padding="12,8"
+            Background="{DynamicResource ThemeControlMidBrush}">
+            <TextBlock x:Name="StatusTextBlock" Text="Ready" />
+        </Border>
+    </Grid>
+</Window>

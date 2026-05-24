@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TradingViewChart/TradingViewChart.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TradingViewChart.Demo/TradingViewChart.Demo.csproj" />
+    <Project Path="tests/TradingViewChart.Tests/TradingViewChart.Tests.csproj" />
+  </Folder>
+</Solution>
