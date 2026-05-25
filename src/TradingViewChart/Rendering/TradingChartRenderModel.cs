@@ -5,7 +5,7 @@ using TradingViewChart.Models;
 
 namespace TradingViewChart.Rendering;
 
-internal sealed class TradingChartRenderModel
+internal readonly struct TradingChartRenderModel
 {
     public required Rect Bounds { get; init; }
     public required TradingChartLayout Layout { get; init; }
@@ -20,6 +20,7 @@ internal sealed class TradingChartRenderModel
     public required int VisibleStartIndex { get; init; }
     public required int VisibleCount { get; init; }
     public required int CrosshairIndex { get; init; }
+    public required double CrosshairX { get; init; }
     public required int ActivePanelIndex { get; init; }
     public required bool ShowCrosshair { get; init; }
     public required ITradingIndicator? HoveredIndicator { get; init; }
@@ -29,6 +30,14 @@ internal sealed class TradingChartRenderModel
     public required CrosshairValueMode CrosshairValueMode { get; init; }
     public required TradingTooltipCorner TooltipCorner { get; init; }
     public required string ChartTitle { get; init; }
+    public required string IndicatorButtonText { get; init; }
+    public required string EmptyStateText { get; init; }
+    public required string TooltipTimeLabel { get; init; }
+    public required string TooltipPriceLabel { get; init; }
+    public required string TooltipOhlcLabel { get; init; }
+    public required string TooltipChangeLabel { get; init; }
+    public required string TooltipTurnoverLabel { get; init; }
+    public required string TooltipVolumeLabel { get; init; }
     public required string XAxisLabelFormat { get; init; }
     public required SKColor BackgroundColor { get; init; }
     public required SKColor GridColor { get; init; }

@@ -5,7 +5,7 @@ using Avalonia.Skia;
 
 namespace TradingViewChart.Rendering;
 
-internal sealed class TradingChartDrawOperation : ICustomDrawOperation
+internal readonly struct TradingChartDrawOperation : ICustomDrawOperation
 {
     private readonly TradingChartRenderer _renderer;
     private readonly TradingChartRenderModel _model;

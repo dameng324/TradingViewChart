@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -90,6 +91,66 @@ public class TradingViewChart : Control
         TradingViewChart,
         string
     >(nameof(ChartTitle), "PRICE");
+
+    public static readonly StyledProperty<string> IndicatorButtonTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(IndicatorButtonText),
+            "Indicators"
+        );
+
+    public static readonly StyledProperty<string> EmptyStateTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(EmptyStateText),
+            "No trading data"
+        );
+
+    public static readonly StyledProperty<string> TooltipTimeLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(TooltipTimeLabel), "Time");
+
+    public static readonly StyledProperty<string> TooltipPriceLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(TooltipPriceLabel), "Price");
+
+    public static readonly StyledProperty<string> TooltipOhlcLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(TooltipOhlcLabel), "O/H/L/C");
+
+    public static readonly StyledProperty<string> TooltipChangeLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(TooltipChangeLabel), "Change");
+
+    public static readonly StyledProperty<string> TooltipTurnoverLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(TooltipTurnoverLabel),
+            "Turnover"
+        );
+
+    public static readonly StyledProperty<string> TooltipVolumeLabelProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(TooltipVolumeLabel), "Volume");
+
+    public static readonly StyledProperty<string> IndicatorMenuShowTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(IndicatorMenuShowText), "Show");
+
+    public static readonly StyledProperty<string> IndicatorMenuHideTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(IndicatorMenuHideText), "Hide");
+
+    public static readonly StyledProperty<string> IndicatorMenuEditTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(nameof(IndicatorMenuEditText), "Edit");
+
+    public static readonly StyledProperty<string> IndicatorMenuDeleteTextProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(IndicatorMenuDeleteText),
+            "Delete"
+        );
+
+    public static readonly StyledProperty<string> AddIndicatorTitleFormatProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(AddIndicatorTitleFormat),
+            "Add {0}"
+        );
+
+    public static readonly StyledProperty<string> EditIndicatorTitleFormatProperty =
+        AvaloniaProperty.Register<TradingViewChart, string>(
+            nameof(EditIndicatorTitleFormat),
+            "Edit {0}"
+        );
 
     public static readonly StyledProperty<DateTimeOffset?> HoveredTimeProperty =
         AvaloniaProperty.Register<TradingViewChart, DateTimeOffset?>(
@@ -206,6 +267,14 @@ public class TradingViewChart : Control
             CrosshairHintModeProperty,
             CrosshairValueModeProperty,
             ChartTitleProperty,
+            IndicatorButtonTextProperty,
+            EmptyStateTextProperty,
+            TooltipTimeLabelProperty,
+            TooltipPriceLabelProperty,
+            TooltipOhlcLabelProperty,
+            TooltipChangeLabelProperty,
+            TooltipTurnoverLabelProperty,
+            TooltipVolumeLabelProperty,
             XAxisLabelFormatProperty,
             SupportedIndicatorsProperty
         );
@@ -347,6 +416,90 @@ public class TradingViewChart : Control
     {
         get => GetValue(ChartTitleProperty);
         set => SetValue(ChartTitleProperty, value);
+    }
+
+    public string IndicatorButtonText
+    {
+        get => GetValue(IndicatorButtonTextProperty);
+        set => SetValue(IndicatorButtonTextProperty, value);
+    }
+
+    public string EmptyStateText
+    {
+        get => GetValue(EmptyStateTextProperty);
+        set => SetValue(EmptyStateTextProperty, value);
+    }
+
+    public string TooltipTimeLabel
+    {
+        get => GetValue(TooltipTimeLabelProperty);
+        set => SetValue(TooltipTimeLabelProperty, value);
+    }
+
+    public string TooltipPriceLabel
+    {
+        get => GetValue(TooltipPriceLabelProperty);
+        set => SetValue(TooltipPriceLabelProperty, value);
+    }
+
+    public string TooltipOhlcLabel
+    {
+        get => GetValue(TooltipOhlcLabelProperty);
+        set => SetValue(TooltipOhlcLabelProperty, value);
+    }
+
+    public string TooltipChangeLabel
+    {
+        get => GetValue(TooltipChangeLabelProperty);
+        set => SetValue(TooltipChangeLabelProperty, value);
+    }
+
+    public string TooltipTurnoverLabel
+    {
+        get => GetValue(TooltipTurnoverLabelProperty);
+        set => SetValue(TooltipTurnoverLabelProperty, value);
+    }
+
+    public string TooltipVolumeLabel
+    {
+        get => GetValue(TooltipVolumeLabelProperty);
+        set => SetValue(TooltipVolumeLabelProperty, value);
+    }
+
+    public string IndicatorMenuShowText
+    {
+        get => GetValue(IndicatorMenuShowTextProperty);
+        set => SetValue(IndicatorMenuShowTextProperty, value);
+    }
+
+    public string IndicatorMenuHideText
+    {
+        get => GetValue(IndicatorMenuHideTextProperty);
+        set => SetValue(IndicatorMenuHideTextProperty, value);
+    }
+
+    public string IndicatorMenuEditText
+    {
+        get => GetValue(IndicatorMenuEditTextProperty);
+        set => SetValue(IndicatorMenuEditTextProperty, value);
+    }
+
+    public string IndicatorMenuDeleteText
+    {
+        get => GetValue(IndicatorMenuDeleteTextProperty);
+        set => SetValue(IndicatorMenuDeleteTextProperty, value);
+    }
+
+    public string AddIndicatorTitleFormat
+    {
+        get => GetValue(AddIndicatorTitleFormatProperty);
+        set => SetValue(AddIndicatorTitleFormatProperty, value);
+    }
+
+    public string EditIndicatorTitleFormat
+    {
+        get => GetValue(EditIndicatorTitleFormatProperty);
+        set => SetValue(EditIndicatorTitleFormatProperty, value);
     }
 
     public DateTimeOffset? HoveredTime
@@ -1219,6 +1372,7 @@ public class TradingViewChart : Control
             VisibleCount =
                 _visibleCount == 0 && data.Count > 0 ? data.Count : Math.Max(0, _visibleCount),
             CrosshairIndex = _crosshairIndex >= 0 ? _crosshairIndex : Math.Max(0, data.Count - 1),
+            CrosshairX = ResolveCrosshairX(),
             ActivePanelIndex = _activePanelIndex,
             ShowCrosshair = _crosshairIndex >= 0,
             HoveredIndicator = _hoveredIndicator,
@@ -1228,6 +1382,30 @@ public class TradingViewChart : Control
             CrosshairValueMode = CrosshairValueMode,
             TooltipCorner = _tooltipCorner,
             ChartTitle = string.IsNullOrWhiteSpace(ChartTitle) ? "PRICE" : ChartTitle,
+            IndicatorButtonText = string.IsNullOrWhiteSpace(IndicatorButtonText)
+                ? "Indicators"
+                : IndicatorButtonText,
+            EmptyStateText = string.IsNullOrWhiteSpace(EmptyStateText)
+                ? "No trading data"
+                : EmptyStateText,
+            TooltipTimeLabel = string.IsNullOrWhiteSpace(TooltipTimeLabel)
+                ? "Time"
+                : TooltipTimeLabel,
+            TooltipPriceLabel = string.IsNullOrWhiteSpace(TooltipPriceLabel)
+                ? "Price"
+                : TooltipPriceLabel,
+            TooltipOhlcLabel = string.IsNullOrWhiteSpace(TooltipOhlcLabel)
+                ? "O/H/L/C"
+                : TooltipOhlcLabel,
+            TooltipChangeLabel = string.IsNullOrWhiteSpace(TooltipChangeLabel)
+                ? "Change"
+                : TooltipChangeLabel,
+            TooltipTurnoverLabel = string.IsNullOrWhiteSpace(TooltipTurnoverLabel)
+                ? "Turnover"
+                : TooltipTurnoverLabel,
+            TooltipVolumeLabel = string.IsNullOrWhiteSpace(TooltipVolumeLabel)
+                ? "Volume"
+                : TooltipVolumeLabel,
             XAxisLabelFormat = string.IsNullOrWhiteSpace(XAxisLabelFormat)
                 ? "yyyy-MM-dd"
                 : XAxisLabelFormat,
@@ -1291,13 +1469,7 @@ public class TradingViewChart : Control
         }
 
         var plotBounds = targetPanel.Value.BodyBounds;
-        var slotWidth = plotBounds.Width / Math.Max(1, _visibleCount);
-        var relativeIndex = (int)Math.Floor((position.X - plotBounds.X) / Math.Max(1d, slotWidth));
-        var nextCrosshairIndex = Math.Clamp(
-            _visibleStartIndex + relativeIndex,
-            0,
-            _renderData.Count - 1
-        );
+        var nextCrosshairIndex = GetIndexAtX(plotBounds, position.X);
         var previousTooltipCorner = _tooltipCorner;
         UpdateTooltipCorner(layout, nextCrosshairIndex);
 
@@ -1498,7 +1670,10 @@ public class TradingViewChart : Control
             _indicatorActionMenu.Close();
         }
 
-        var hideShowItem = new MenuItem { Header = item.IsHidden ? "Show" : "Hide" };
+        var hideShowItem = new MenuItem
+        {
+            Header = item.IsHidden ? IndicatorMenuShowText : IndicatorMenuHideText,
+        };
         hideShowItem.Click += (_, _) =>
         {
             item.IsHidden = !item.IsHidden;
@@ -1511,14 +1686,14 @@ public class TradingViewChart : Control
 
         var editItem = new MenuItem
         {
-            Header = "Edit",
+            Header = IndicatorMenuEditText,
             IsEnabled = item.CanEdit && IndicatorEditor is not null,
         };
         editItem.Click += async (_, _) => await EditIndicatorAsync(item, isNewItem: false);
 
         var deleteItem = new MenuItem
         {
-            Header = "Delete",
+            Header = IndicatorMenuDeleteText,
             IsEnabled = CanDeleteIndicatorItem(item),
         };
         deleteItem.Click += (_, _) => DeleteIndicatorItem(item);
@@ -1535,7 +1710,11 @@ public class TradingViewChart : Control
     private async Task EditIndicatorAsync(TradingIndicatorItem item, bool isNewItem)
     {
         var draft = item.Clone();
-        var title = isNewItem ? $"Add {draft.DisplayName}" : $"Edit {draft.DisplayName}";
+        var title = string.Format(
+            CultureInfo.CurrentCulture,
+            isNewItem ? AddIndicatorTitleFormat : EditIndicatorTitleFormat,
+            draft.DisplayName
+        );
         if (
             IndicatorEditor is null
             || !await IndicatorEditor.EditAsync(
@@ -1640,10 +1819,7 @@ public class TradingViewChart : Control
                 continue;
             }
 
-            var slotWidth = panel.BodyBounds.Width / Math.Max(1, _visibleCount);
-            var relativeIndex = (int)
-                Math.Floor((position.X - panel.BodyBounds.X) / Math.Max(1d, slotWidth));
-            return Math.Clamp(_visibleStartIndex + relativeIndex, 0, _renderData.Count - 1);
+            return GetIndexAtX(panel.BodyBounds, position.X);
         }
 
         return -1;
@@ -2064,6 +2240,41 @@ public class TradingViewChart : Control
         var visibleCount = Math.Max(1, _visibleCount);
         var slotWidth = bodyBounds.Width / visibleCount;
         return bodyBounds.X + ((index - _visibleStartIndex + 0.5d) * slotWidth);
+    }
+
+    private int GetIndexAtX(Rect bodyBounds, double x)
+    {
+        var visibleCount = Math.Max(1, _visibleCount);
+        var slotWidth = bodyBounds.Width / visibleCount;
+        if (slotWidth <= 0d)
+        {
+            return Math.Clamp(_visibleStartIndex, 0, Math.Max(0, _renderData.Count - 1));
+        }
+
+        var relativeIndex = (int)Math.Round(((x - bodyBounds.X) / slotWidth) - 0.5d);
+        return Math.Clamp(_visibleStartIndex + relativeIndex, 0, _renderData.Count - 1);
+    }
+
+    private double ResolveCrosshairX()
+    {
+        var layout = GetCurrentLayout();
+        if (layout.Panels.Count == 0)
+        {
+            return 0d;
+        }
+
+        var bodyBounds = layout.Panels[0].BodyBounds;
+        if (
+            CrosshairValueMode == CrosshairValueMode.FollowPointer
+            && !_isKeyboardCrosshairControl
+            && _hasPhysicalPointerPosition
+        )
+        {
+            return Math.Clamp(_lastPointerPosition.X, bodyBounds.Left, bodyBounds.Right);
+        }
+
+        var index = Math.Clamp(_crosshairIndex, 0, Math.Max(0, _renderData.Count - 1));
+        return GetCrosshairX(bodyBounds, index);
     }
 
     private static bool HasPointerMoved(Point current, Point previous)

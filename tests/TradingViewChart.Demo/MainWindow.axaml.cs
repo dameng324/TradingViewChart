@@ -20,14 +20,5 @@ public sealed partial class MainWindow : Window
     {
         RequestedThemeVariant =
             RequestedThemeVariant == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark;
-
-        Dispatcher.UIThread.Post(
-            () =>
-            {
-                CandleChart.InvalidateVisual();
-                PriceChart.InvalidateVisual();
-            },
-            DispatcherPriority.Render
-        );
     }
 }

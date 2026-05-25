@@ -83,7 +83,7 @@ internal sealed class TradingChartRenderer : IDisposable
 
         if (model.Data.Count == 0 || layout.Panels.Count == 0)
         {
-            DrawEmptyState(canvas, layout);
+            DrawEmptyState(canvas, layout, model);
             return;
         }
 
@@ -177,7 +177,8 @@ internal sealed class TradingChartRenderer : IDisposable
 
     public TradingOverlayHitTarget? HitTestOverlay(TradingChartRenderModel model, Point position)
     {
-        var buttonBounds = GetIndicatorButtonBounds(model.Layout);
+        ConfigureCommonPaints(model);
+        var buttonBounds = GetIndicatorButtonBounds(model.Layout, model.IndicatorButtonText);
         return buttonBounds.Contains((float)position.X, (float)position.Y)
             ? new TradingOverlayHitTarget(TradingOverlayAction.AddIndicator)
             : null;
@@ -332,7 +333,7 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingChartRenderModel model
     )
     {
-        var bounds = GetIndicatorButtonBounds(layout);
+        var bounds = GetIndicatorButtonBounds(layout, model.IndicatorButtonText);
         var color =
             model.SupportedIndicators.Count > 0
                 ? new SKColor(59, 130, 246, 42)
@@ -342,7 +343,7 @@ internal sealed class TradingChartRenderer : IDisposable
         _axisTextPaint.Color = model.TextColor;
         float y = bounds.Bottom - 6f;
         canvas.DrawText(
-            "Indicators",
+            model.IndicatorButtonText,
             bounds.MidX,
             y,
             SKTextAlign.Center,
@@ -351,20 +352,25 @@ internal sealed class TradingChartRenderer : IDisposable
         );
     }
 
-    private static SKRect GetIndicatorButtonBounds(TradingChartLayout layout)
+    private SKRect GetIndicatorButtonBounds(TradingChartLayout layout, string text)
     {
+        var width = Math.Max(92f, _axisFont.MeasureText(text, _axisTextPaint) + 20f);
         var right =
             layout.Panels.Count > 0
                 ? (float)(layout.Panels[0].BodyBounds.Right - 12d)
                 : (float)(layout.ControlBounds.Right - layout.YAxisWidth - 12d);
-        return SKRect.Create(right - 92f, (float)layout.OuterPadding, 92f, 22f);
+        return SKRect.Create(right - width, (float)layout.OuterPadding, width, 22f);
     }
 
-    private void DrawEmptyState(SKCanvas canvas, TradingChartLayout layout)
+    private void DrawEmptyState(
+        SKCanvas canvas,
+        TradingChartLayout layout,
+        TradingChartRenderModel model
+    )
     {
         float x = (float)(layout.ControlBounds.Width / 2d);
         float y = (float)(layout.ControlBounds.Height / 2d);
-        canvas.DrawText("No trading data", x, y, SKTextAlign.Center, _axisFont, _axisTextPaint);
+        canvas.DrawText(model.EmptyStateText, x, y, SKTextAlign.Center, _axisFont, _axisTextPaint);
     }
 
     private void DrawGrid(SKCanvas canvas, TradingChartPanelLayout panel, TradingValueRange range)
@@ -937,7 +943,8 @@ internal sealed class TradingChartRenderer : IDisposable
         }
 
         var mainPanel = layout.Panels[0];
-        var x = GetX(mainPanel.BodyBounds, visibleStart, model.VisibleCount, model.CrosshairIndex);
+        var x = (float)
+            Math.Clamp(model.CrosshairX, mainPanel.BodyBounds.Left, mainPanel.BodyBounds.Right);
         var target = ResolveCrosshairTarget(layout, mainRange, model, visibleStart, visibleEnd);
         if (!target.HasValue)
         {
@@ -1006,8 +1013,8 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             Span<string> priceLines =
             [
-                $"Time  {point.Time.ToString(model.XAxisLabelFormat)}",
-                $"Price  {point.Close:F2}",
+                $"{model.TooltipTimeLabel}  {point.Time.ToString(model.XAxisLabelFormat)}",
+                $"{model.TooltipPriceLabel}  {point.Close:F2}",
             ];
 
             var priceWidth = 0f;
@@ -1051,11 +1058,11 @@ internal sealed class TradingChartRenderer : IDisposable
         var changePercentage = baseline == 0d ? 0d : ((point.Close - baseline) / baseline) * 100d;
         Span<string> lines =
         [
-            $"Time  {point.Time.ToString(model.XAxisLabelFormat)}",
-            $"O/H/L/C  {point.Open:F2} / {point.High:F2} / {point.Low:F2} / {point.Close:F2}",
-            $"Change  {changePercentage:+0.00;-0.00;0.00}%",
-            $"Turnover  {FormatVolume(point.Turnover)}",
-            $"Volume  {FormatVolume(point.Volume)}",
+            $"{model.TooltipTimeLabel}  {point.Time.ToString(model.XAxisLabelFormat)}",
+            $"{model.TooltipOhlcLabel}  {point.Open:F2} / {point.High:F2} / {point.Low:F2} / {point.Close:F2}",
+            $"{model.TooltipChangeLabel}  {changePercentage:+0.00;-0.00;0.00}%",
+            $"{model.TooltipTurnoverLabel}  {FormatVolume(point.Turnover)}",
+            $"{model.TooltipVolumeLabel}  {FormatVolume(point.Volume)}",
         ];
 
         var width = 0f;

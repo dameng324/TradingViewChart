@@ -164,6 +164,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     {
         var description = CurrentChart.AddLatest();
         StatusText = description;
+        CurrentChart.ShiftViewport(1);
         RaiseCurrentChartBindingsChanged();
     }
 
@@ -392,7 +393,7 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
 
     public static ChartDemoViewModel CreateCandles()
     {
-        var candleData = new ObservableCollection<CandlePoint>(DemoDataFactory.CreateCandles(360));
+        var candleData = new ObservableCollection<CandlePoint>(DemoDataFactory.CreateCandles(3600));
         var markers = new ObservableCollection<TradingMarker>(
             DemoDataFactory.CreateCandleMarkers(candleData)
         );
@@ -421,7 +422,7 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
 
     public static ChartDemoViewModel CreatePrices()
     {
-        var priceData = new ObservableCollection<PricePoint>(DemoDataFactory.CreatePrices(360));
+        var priceData = new ObservableCollection<PricePoint>(DemoDataFactory.CreatePrices(3600));
         var markers = new ObservableCollection<TradingMarker>(
             DemoDataFactory.CreatePriceMarkers(priceData)
         );
