@@ -1,6 +1,6 @@
 namespace TradingViewChart;
 
-public enum CrosshairMode
+public enum CrosshairHintMode
 {
     FixedCorner,
     FollowMouse

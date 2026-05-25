@@ -3,11 +3,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:demo="clr-namespace:TradingViewChart.Demo"
+    x:DataType="demo:MainWindowViewModel"
     Title="TradingViewChart Demo"
-    Width="1280"
-    Height="820"
-    MinWidth="960"
-    MinHeight="640">
+    Width="1380"
+    Height="920"
+    MinWidth="1180"
+    MinHeight="720">
     <Grid RowDefinitions="Auto,*,Auto">
         <Border
             Grid.Row="0"
@@ -16,64 +17,64 @@
             <StackPanel Spacing="10">
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
                     <StackPanel Spacing="4">
-                        <TextBlock
-                            FontSize="20"
-                            FontWeight="Bold"
-                            Text="TradingViewChart Demo" />
-                        <TextBlock Opacity="0.8" Text="滚轮缩放，左键拖动平移，左右方向键移动十字线，右键由宿主提供上下文菜单；可切换 CandleSource / PriceSource 并实时增删改数据。" />
-                        <WrapPanel>
-                            <TextBlock
-                                Margin="0,0,16,0"
-                                Opacity="0.8"
-                                Text="{Binding CurrentHoveredTimeText}" />
-                            <TextBlock
-                                Margin="0,0,16,0"
-                                Opacity="0.8"
-                                Text="{Binding CurrentDemoSummaryText}" />
-                            <TextBlock Opacity="0.8" Text="{Binding FpsText}" />
+                        <TextBlock FontSize="20" FontWeight="Bold" Text="TradingViewChart Demo" />
+                        <TextBlock Opacity="0.8" Text="左键单击触发点命令，滚轮或绑定缩放比例，拖拽或绑定时间范围平移，右上角 Indicators 按钮可添加/编辑指标。" />
+                        <WrapPanel ItemSpacing="12">
+                            <TextBlock Opacity="0.8" Text="{Binding CurrentHoveredTimeText}" />
+                            <TextBlock Opacity="0.8" Text="{Binding CurrentViewportText}" />
+                            <TextBlock Opacity="0.8" Text="{Binding FrameText}" />
                         </WrapPanel>
+                        <TextBlock Opacity="0.8" Text="{Binding CurrentIndicatorText}" TextWrapping="Wrap" />
                     </StackPanel>
-                    <Button
-                        Grid.Column="1"
-                        Click="OnToggleThemeClick"
-                        Content="切换明暗" />
+                    <Button Grid.Column="1" Click="OnToggleThemeClick" Content="切换明暗" />
                 </Grid>
 
-                <WrapPanel
-                    ItemHeight="32"
-                    ItemSpacing="5"
-                    ItemWidth="160"
-                    Orientation="Horizontal">
-                    <ComboBox x:Name="CrosshairModeComboBox">
-                        <ComboBoxItem Content="Crosshair: FixedCorner" />
-                        <ComboBoxItem Content="Crosshair: FollowMouse" />
-                    </ComboBox>
-                    <ComboBox x:Name="CrosshairValueModeComboBox">
-                        <ComboBoxItem Content="SnapToData" />
-                        <ComboBoxItem Content="FollowPointer" />
-                    </ComboBox>
-                    <ComboBox x:Name="XAxisFormatComboBox">
-                        <ComboBoxItem Content="时间: yyyy-MM-dd" />
-                        <ComboBoxItem Content="时间: MM-dd" />
-                        <ComboBoxItem Content="时间: yyyy-MM-dd HH:mm" />
-                    </ComboBox>
-                    <Button
-                        Width="120"
-                        Click="OnToggleMarkersClick"
-                        Content="切换标记" />
-                    <Button
-                        Width="120"
-                        Click="OnAddLatestClick"
-                        Content="追加最新数据" />
-                    <Button
-                        Width="120"
-                        Click="OnUpdateLatestClick"
-                        Content="修改最新数据" />
-                    <Button
-                        Width="120"
-                        Click="OnDeleteLatestClick"
-                        Content="删除最新数据" />
+                <WrapPanel ItemHeight="32" ItemSpacing="6" ItemWidth="180">
+                    <ComboBox
+                        ItemsSource="{Binding CrosshairModes}"
+                        SelectedItem="{Binding CurrentChart.CrosshairHintMode}" />
+                    <ComboBox
+                        ItemsSource="{Binding CrosshairValueModes}"
+                        SelectedItem="{Binding CurrentChart.CrosshairValueMode}" />
+                    <ComboBox
+                        ItemsSource="{Binding XAxisFormats}"
+                        SelectedItem="{Binding CurrentChart.XAxisLabelFormat}" />
+                    <Button Command="{Binding ToggleMarkersCommand}" Content="切换标记" />
+                    <Button Command="{Binding AddLatestCommand}" Content="追加最新数据" />
+                    <Button Command="{Binding UpdateLatestCommand}" Content="修改最新数据" />
+                    <Button Command="{Binding DeleteLatestCommand}" Content="删除最新数据" />
+                    <Button Command="{Binding PanLeftCommand}" Content="左移 1 条" />
+                    <Button Command="{Binding PanRightCommand}" Content="右移 1 条" />
                 </WrapPanel>
+
+                <Grid ColumnDefinitions="220,220,220,*" ColumnSpacing="10">
+                    <StackPanel Grid.Column="0" Spacing="4">
+                        <TextBlock Text="Viewport Start" />
+                        <ComboBox
+                            ItemsSource="{Binding CurrentChart.AvailableTimes}"
+                            SelectedItem="{Binding CurrentViewportStartTime}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Spacing="4">
+                        <TextBlock Text="Viewport End" />
+                        <ComboBox
+                            ItemsSource="{Binding CurrentChart.AvailableTimes}"
+                            SelectedItem="{Binding CurrentViewportEndTime}" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="2" Spacing="4">
+                        <TextBlock Text="{Binding CurrentChart.LastPointClickText}" />
+                        <Slider
+                            Minimum="1"
+                            Maximum="12"
+                            TickFrequency="1"
+                            Value="{Binding CurrentZoomRatio}" />
+                    </StackPanel>
+                    <TextBlock
+                        Grid.Column="3"
+                        VerticalAlignment="Center"
+                        Opacity="0.8"
+                        Text="图表右上角可直接添加指标；点击图例标题可修改参数与隐藏状态。"
+                        TextWrapping="Wrap" />
+                </Grid>
             </StackPanel>
         </Border>
 
@@ -84,12 +85,92 @@
             BorderBrush="{DynamicResource ThemeControlLowBrush}"
             BorderThickness="1"
             CornerRadius="8">
-            <TabControl x:Name="DemoTabs" SelectionChanged="OnDemoTabSelectionChanged">
+            <TabControl SelectedIndex="{Binding SelectedDemoIndex}">
                 <TabItem Header="CandleSource">
-                    <demo:DemoTradingViewChart x:Name="CandleChart" />
+                    <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,300" ColumnSpacing="8">
+                        <demo:DemoTradingViewChart
+                            x:Name="CandleChart"
+                            Grid.Column="0"
+                            AxisTextBrush="{Binding CandleChart.AxisTextBrush}"
+                            CandleSource="{Binding CandleChart.CandleSource}"
+                            ChartBackgroundBrush="{Binding CandleChart.ChartBackgroundBrush}"
+                            CrosshairHintMode="{Binding CandleChart.CrosshairHintMode}"
+                            CrosshairValueMode="{Binding CandleChart.CrosshairValueMode}"
+                            DownBrush="{Binding CandleChart.DownBrush}"
+                            GridLineBrush="{Binding CandleChart.GridLineBrush}"
+                            HoveredTime="{Binding CandleChart.HoveredTime}"
+                            IndicatorEditor="{Binding CandleChart.IndicatorEditor}"
+                            IndicatorItems="{Binding CandleChart.IndicatorItems}"
+                            LimitDownBrush="{Binding CandleChart.LimitDownBrush}"
+                            LimitUpBrush="{Binding CandleChart.LimitUpBrush}"
+                            Markers="{Binding CandleChart.Markers}"
+                            PointClickCommand="{Binding CandleChart.TogglePointClickCommand}"
+                            PointClickCommandParameter="{Binding CandleChart.PointClickCommandParameter}"
+                            SupportedIndicators="{Binding CandleChart.SupportedIndicators}"
+                            TooltipBackgroundBrush="{Binding CandleChart.TooltipBackgroundBrush}"
+                            TooltipTextBrush="{Binding CandleChart.TooltipTextBrush}"
+                            UpBrush="{Binding CandleChart.UpBrush}"
+                            VisibleEndTime="{Binding CandleChart.VisibleEndTime}"
+                            VisibleStartTime="{Binding CandleChart.VisibleStartTime}"
+                            XAxisLabelFormat="{Binding CandleChart.XAxisLabelFormat}"
+                            ZoomRatio="{Binding CandleChart.ZoomRatio}" />
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="8">
+                            <TextBlock FontWeight="Bold" Text="Candle bindings" />
+                            <TextBlock Text="{Binding CandleChart.HoveredTimeText}" />
+                            <TextBlock Text="{Binding CandleChart.ViewportText}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding CandleChart.LastPointClickText}" TextWrapping="Wrap" />
+                            <ItemsControl ItemsSource="{Binding CandleChart.IndicatorItems}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="PriceSource">
-                    <demo:DemoTradingViewChart x:Name="PriceChart" />
+                    <Grid RowDefinitions="*,Auto" ColumnDefinitions="*,300" ColumnSpacing="8">
+                        <demo:DemoTradingViewChart
+                            x:Name="PriceChart"
+                            Grid.Column="0"
+                            AxisTextBrush="{Binding PriceChart.AxisTextBrush}"
+                            ChartBackgroundBrush="{Binding PriceChart.ChartBackgroundBrush}"
+                            CrosshairHintMode="{Binding PriceChart.CrosshairHintMode}"
+                            CrosshairValueMode="{Binding PriceChart.CrosshairValueMode}"
+                            DownBrush="{Binding PriceChart.DownBrush}"
+                            GridLineBrush="{Binding PriceChart.GridLineBrush}"
+                            HoveredTime="{Binding PriceChart.HoveredTime}"
+                            IndicatorEditor="{Binding PriceChart.IndicatorEditor}"
+                            IndicatorItems="{Binding PriceChart.IndicatorItems}"
+                            LimitDownBrush="{Binding PriceChart.LimitDownBrush}"
+                            LimitUpBrush="{Binding PriceChart.LimitUpBrush}"
+                            Markers="{Binding PriceChart.Markers}"
+                            PointClickCommand="{Binding PriceChart.TogglePointClickCommand}"
+                            PointClickCommandParameter="{Binding PriceChart.PointClickCommandParameter}"
+                            PriceSource="{Binding PriceChart.PriceSource}"
+                            SupportedIndicators="{Binding PriceChart.SupportedIndicators}"
+                            TooltipBackgroundBrush="{Binding PriceChart.TooltipBackgroundBrush}"
+                            TooltipTextBrush="{Binding PriceChart.TooltipTextBrush}"
+                            UpBrush="{Binding PriceChart.UpBrush}"
+                            VisibleEndTime="{Binding PriceChart.VisibleEndTime}"
+                            VisibleStartTime="{Binding PriceChart.VisibleStartTime}"
+                            XAxisLabelFormat="{Binding PriceChart.XAxisLabelFormat}"
+                            ZoomRatio="{Binding PriceChart.ZoomRatio}" />
+                        <StackPanel Grid.Column="1" Margin="8,0,0,0" Spacing="8">
+                            <TextBlock FontWeight="Bold" Text="Price bindings" />
+                            <TextBlock Text="{Binding PriceChart.HoveredTimeText}" />
+                            <TextBlock Text="{Binding PriceChart.ViewportText}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding PriceChart.LastPointClickText}" TextWrapping="Wrap" />
+                            <ItemsControl ItemsSource="{Binding PriceChart.IndicatorItems}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Grid>
                 </TabItem>
             </TabControl>
         </Border>
@@ -98,7 +179,7 @@
             Grid.Row="2"
             Padding="12,8"
             Background="{DynamicResource ThemeControlMidBrush}">
-            <TextBlock x:Name="StatusTextBlock" Text="Ready" />
+            <TextBlock Text="{Binding StatusText}" />
         </Border>
     </Grid>
 </Window>
