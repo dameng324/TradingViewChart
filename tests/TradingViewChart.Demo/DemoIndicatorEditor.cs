@@ -110,7 +110,7 @@ internal sealed class DemoIndicatorEditorDialog : Window
             _ => new TextBox
             {
                 Text = parameter.Value?.ToString() ?? string.Empty,
-                Watermark = parameter.Definition.DefaultValue?.ToString(),
+                PlaceholderText = parameter.Definition.DefaultValue?.ToString(),
             },
         };
 

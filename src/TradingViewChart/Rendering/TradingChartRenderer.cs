@@ -9,8 +9,8 @@ internal sealed class TradingChartRenderer : IDisposable
 {
     private readonly SKPaint _backgroundPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _gridPaint = CreatePaint(SKPaintStyle.Stroke);
-    private readonly SKPaint _axisTextPaint = CreateTextPaint(11f, SKTextAlign.Left);
-    private readonly SKPaint _tooltipTextPaint = CreateTextPaint(12f, SKTextAlign.Left);
+    private readonly SKPaint _axisTextPaint = CreateTextPaint();
+    private readonly SKPaint _tooltipTextPaint = CreateTextPaint();
     private readonly SKPaint _tooltipBackgroundPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _candleBodyPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _wickPaint = CreatePaint(SKPaintStyle.Stroke);
@@ -19,12 +19,13 @@ internal sealed class TradingChartRenderer : IDisposable
     private readonly SKPaint _crosshairPaint = CreatePaint(SKPaintStyle.Stroke);
     private readonly SKPaint _crosshairPointPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _markerPaint = CreatePaint(SKPaintStyle.Fill);
-    private readonly SKPaint _markerTextPaint = CreateTextPaint(11f, SKTextAlign.Left);
-    private readonly SKPaint _centerAxisTextPaint = CreateTextPaint(11f, SKTextAlign.Center);
-    private readonly SKPaint _centerTooltipTextPaint = CreateTextPaint(12f, SKTextAlign.Center);
+    private readonly SKPaint _markerTextPaint = CreateTextPaint();
     private readonly SKPaint _legendBackgroundPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _splitterPaint = CreatePaint(SKPaintStyle.Fill);
     private readonly SKPaint _valueTagBackgroundPaint = CreatePaint(SKPaintStyle.Fill);
+    private readonly SKFont _axisFont = CreateFont(11f);
+    private readonly SKFont _axisBoldFont = CreateFont(11f, embolden: true);
+    private readonly SKFont _tooltipFont = CreateFont(12f);
     private readonly SKPath _linePath = new();
     private readonly SKPath _markerPath = new();
     private readonly List<LatestValueTag> _latestValueTags = [];
@@ -57,11 +58,12 @@ internal sealed class TradingChartRenderer : IDisposable
         _crosshairPointPaint.Dispose();
         _markerPaint.Dispose();
         _markerTextPaint.Dispose();
-        _centerAxisTextPaint.Dispose();
-        _centerTooltipTextPaint.Dispose();
         _legendBackgroundPaint.Dispose();
         _splitterPaint.Dispose();
         _valueTagBackgroundPaint.Dispose();
+        _axisFont.Dispose();
+        _axisBoldFont.Dispose();
+        _tooltipFont.Dispose();
         _linePath.Dispose();
         _markerPath.Dispose();
     }
@@ -287,15 +289,14 @@ internal sealed class TradingChartRenderer : IDisposable
         return new SKPaint { Style = style, IsAntialias = true };
     }
 
-    private static SKPaint CreateTextPaint(float size, SKTextAlign align)
+    private static SKPaint CreateTextPaint()
     {
-        return new SKPaint
-        {
-            Style = SKPaintStyle.Fill,
-            IsAntialias = true,
-            TextSize = size,
-            TextAlign = align,
-        };
+        return new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true };
+    }
+
+    private static SKFont CreateFont(float size, bool embolden = false)
+    {
+        return new SKFont { Size = size, Embolden = embolden };
     }
 
     private void ConfigureCommonPaints(TradingChartRenderModel model)
@@ -303,9 +304,7 @@ internal sealed class TradingChartRenderer : IDisposable
         _backgroundPaint.Color = model.BackgroundColor;
         _gridPaint.Color = model.GridColor;
         _axisTextPaint.Color = model.TextColor;
-        _centerAxisTextPaint.Color = model.TextColor;
         _tooltipTextPaint.Color = model.TooltipTextColor;
-        _centerTooltipTextPaint.Color = model.TooltipTextColor;
         _tooltipBackgroundPaint.Color = model.TooltipBackgroundColor;
         _crosshairPaint.Color = model.TextColor.WithAlpha(180);
         _crosshairPointPaint.Color = model.TextColor;
@@ -341,7 +340,15 @@ internal sealed class TradingChartRenderer : IDisposable
         _legendBackgroundPaint.Color = color;
         canvas.DrawRoundRect(bounds, 6f, 6f, _legendBackgroundPaint);
         _axisTextPaint.Color = model.TextColor;
-        canvas.DrawText("Indicators", bounds.MidX, bounds.Bottom - 6f, _centerAxisTextPaint);
+        float y = bounds.Bottom - 6f;
+        canvas.DrawText(
+            "Indicators",
+            bounds.MidX,
+            y,
+            SKTextAlign.Center,
+            _axisFont,
+            _axisTextPaint
+        );
     }
 
     private static SKRect GetIndicatorButtonBounds(TradingChartLayout layout)
@@ -355,12 +362,9 @@ internal sealed class TradingChartRenderer : IDisposable
 
     private void DrawEmptyState(SKCanvas canvas, TradingChartLayout layout)
     {
-        canvas.DrawText(
-            "No trading data",
-            (float)(layout.ControlBounds.Width / 2d),
-            (float)(layout.ControlBounds.Height / 2d),
-            _centerAxisTextPaint
-        );
+        float x = (float)(layout.ControlBounds.Width / 2d);
+        float y = (float)(layout.ControlBounds.Height / 2d);
+        canvas.DrawText("No trading data", x, y, SKTextAlign.Center, _axisFont, _axisTextPaint);
     }
 
     private void DrawGrid(SKCanvas canvas, TradingChartPanelLayout panel, TradingValueRange range)
@@ -396,7 +400,8 @@ internal sealed class TradingChartRenderer : IDisposable
     {
         var y = (float)panel.Bounds.Top + 15f;
         _axisTextPaint.Color = model.TextColor;
-        canvas.DrawText(model.ChartTitle, (float)panel.Bounds.Left + 4f, y, _axisTextPaint);
+        float x = (float)panel.Bounds.Left + 4f;
+        canvas.DrawText(model.ChartTitle, x, y, SKTextAlign.Left, _axisFont, _axisTextPaint);
 
         var items = BuildLegendItems(model);
         for (var i = 0; i < items.Count; i++)
@@ -448,16 +453,22 @@ internal sealed class TradingChartRenderer : IDisposable
         for (var i = 0; i < item.Segments.Count; i++)
         {
             _axisTextPaint.Color = item.Segments[i].Color;
-            _axisTextPaint.FakeBoldText = item.Segments[i].IsBold;
-            canvas.DrawText(item.Segments[i].Text, textX, baselineY, _axisTextPaint);
-            textX += _axisTextPaint.MeasureText(item.Segments[i].Text);
+            var font = item.Segments[i].IsBold ? _axisBoldFont : _axisFont;
+            canvas.DrawText(
+                item.Segments[i].Text,
+                textX,
+                baselineY,
+                SKTextAlign.Left,
+                font,
+                _axisTextPaint
+            );
+            textX += font.MeasureText(item.Segments[i].Text, _axisTextPaint);
             if (i < item.Segments.Count - 1)
             {
                 textX += 8f;
             }
         }
 
-        _axisTextPaint.FakeBoldText = false;
         _axisTextPaint.Color = model.TextColor;
     }
 
@@ -749,7 +760,15 @@ internal sealed class TradingChartRenderer : IDisposable
             if (!string.IsNullOrWhiteSpace(marker.Note))
             {
                 var noteY = marker.Placement == TradingMarkerPlacement.Above ? y - 8f : y + 14f;
-                canvas.DrawText(marker.Note, x + 8f, noteY, _markerTextPaint);
+                float x1 = x + 8f;
+                canvas.DrawText(
+                    marker.Note,
+                    x1,
+                    noteY,
+                    SKTextAlign.Left,
+                    _axisFont,
+                    _markerTextPaint
+                );
             }
         }
     }
@@ -772,7 +791,14 @@ internal sealed class TradingChartRenderer : IDisposable
                     : i == range.Ticks.Count - 1 ? -2f
                     : 4f
                 );
-            canvas.DrawText(FormatAxisValue(value, range.Step), axisX, baseline, _axisTextPaint);
+            canvas.DrawText(
+                FormatAxisValue(value, range.Step),
+                axisX,
+                baseline,
+                SKTextAlign.Left,
+                _axisFont,
+                _axisTextPaint
+            );
         }
     }
 
@@ -827,7 +853,7 @@ internal sealed class TradingChartRenderer : IDisposable
         for (var i = 0; i < _latestValuePlacements.Count; i++)
         {
             var label = _latestValuePlacements[i].Tag.Text;
-            var width = _tooltipTextPaint.MeasureText(label) + 10f;
+            var width = _tooltipFont.MeasureText(label, _tooltipTextPaint) + 10f;
             var rect = SKRect.Create(
                 (float)panel.AxisBounds.Left + 2f,
                 _latestValuePlacements[i].Y - 9f,
@@ -837,11 +863,11 @@ internal sealed class TradingChartRenderer : IDisposable
             _valueTagBackgroundPaint.Color = _latestValuePlacements[i].Tag.Color;
             canvas.DrawRoundRect(rect, 4f, 4f, _valueTagBackgroundPaint);
             _tooltipTextPaint.Color = SKColors.White;
-            _tooltipTextPaint.FakeBoldText = false;
-            canvas.DrawText(label, rect.Left + 5f, rect.Bottom - 5f, _tooltipTextPaint);
+            float x = rect.Left + 5f;
+            float y = rect.Bottom - 5f;
+            canvas.DrawText(label, x, y, SKTextAlign.Left, _tooltipFont, _tooltipTextPaint);
         }
 
-        _tooltipTextPaint.FakeBoldText = false;
         _tooltipTextPaint.Color = model.TooltipTextColor;
     }
 
@@ -882,14 +908,13 @@ internal sealed class TradingChartRenderer : IDisposable
             index = Math.Clamp(index, visibleStart, visibleEnd);
             var x = GetX(layout.XAxisBounds, visibleStart, model.VisibleCount, index);
             var label = model.Data[index].Time.ToString(model.XAxisLabelFormat);
-            _axisTextPaint.TextAlign =
+            var align =
                 tick == 0 ? SKTextAlign.Left
                 : tick == tickCount - 1 ? SKTextAlign.Right
                 : SKTextAlign.Center;
-            canvas.DrawText(label, x, (float)layout.XAxisBounds.Bottom - 6f, _axisTextPaint);
+            float y = (float)layout.XAxisBounds.Bottom - 6f;
+            canvas.DrawText(label, x, y, align, _axisFont, _axisTextPaint);
         }
-
-        _axisTextPaint.TextAlign = SKTextAlign.Left;
     }
 
     private void DrawCrosshair(
@@ -936,7 +961,7 @@ internal sealed class TradingChartRenderer : IDisposable
         canvas.DrawCircle(x, target.Value.Y, 3.5f, _crosshairPointPaint);
 
         var label = model.Data[model.CrosshairIndex].Time.ToString(model.XAxisLabelFormat);
-        var textWidth = _tooltipTextPaint.MeasureText(label);
+        var textWidth = _tooltipFont.MeasureText(label, _tooltipTextPaint);
         var rect = SKRect.Create(
             x - (textWidth / 2f) - 6f,
             (float)layout.XAxisBounds.Top + 2f,
@@ -944,10 +969,11 @@ internal sealed class TradingChartRenderer : IDisposable
             18f
         );
         canvas.DrawRect(rect, _tooltipBackgroundPaint);
-        canvas.DrawText(label, rect.MidX, rect.Bottom - 5f, _centerTooltipTextPaint);
+        float y = rect.Bottom - 5f;
+        canvas.DrawText(label, rect.MidX, y, SKTextAlign.Center, _tooltipFont, _tooltipTextPaint);
 
         var valueLabel = FormatValue(target.Value.Value);
-        var valueWidth = _tooltipTextPaint.MeasureText(valueLabel);
+        var valueWidth = _tooltipFont.MeasureText(valueLabel, _tooltipTextPaint);
         var valueRect = SKRect.Create(
             (float)(target.Value.Panel.AxisBounds.Left + 2d),
             target.Value.Y - 9f,
@@ -955,7 +981,9 @@ internal sealed class TradingChartRenderer : IDisposable
             18f
         );
         canvas.DrawRect(valueRect, _tooltipBackgroundPaint);
-        canvas.DrawText(valueLabel, valueRect.Left + 5f, valueRect.Bottom - 5f, _tooltipTextPaint);
+        float x1 = valueRect.Left + 5f;
+        float y1 = valueRect.Bottom - 5f;
+        canvas.DrawText(valueLabel, x1, y1, SKTextAlign.Left, _tooltipFont, _tooltipTextPaint);
     }
 
     private void DrawTooltip(
@@ -985,7 +1013,10 @@ internal sealed class TradingChartRenderer : IDisposable
             var priceWidth = 0f;
             for (var i = 0; i < priceLines.Length; i++)
             {
-                priceWidth = Math.Max(priceWidth, _tooltipTextPaint.MeasureText(priceLines[i]));
+                priceWidth = Math.Max(
+                    priceWidth,
+                    _tooltipFont.MeasureText(priceLines[i], _tooltipTextPaint)
+                );
             }
 
             priceWidth += 18f;
@@ -1001,10 +1032,14 @@ internal sealed class TradingChartRenderer : IDisposable
 
             for (var i = 0; i < priceLines.Length; i++)
             {
+                float x = priceRect.Left + 9f;
+                float y = priceRect.Top + 18f + (i * 16f);
                 canvas.DrawText(
                     priceLines[i],
-                    priceRect.Left + 9f,
-                    priceRect.Top + 18f + (i * 16f),
+                    x,
+                    y,
+                    SKTextAlign.Left,
+                    _tooltipFont,
                     _tooltipTextPaint
                 );
             }
@@ -1026,7 +1061,7 @@ internal sealed class TradingChartRenderer : IDisposable
         var width = 0f;
         for (var i = 0; i < lines.Length; i++)
         {
-            width = Math.Max(width, _tooltipTextPaint.MeasureText(lines[i]));
+            width = Math.Max(width, _tooltipFont.MeasureText(lines[i], _tooltipTextPaint));
         }
 
         width += 18f;
@@ -1037,12 +1072,9 @@ internal sealed class TradingChartRenderer : IDisposable
 
         for (var i = 0; i < lines.Length; i++)
         {
-            canvas.DrawText(
-                lines[i],
-                rect.Left + 9f,
-                rect.Top + 18f + (i * 16f),
-                _tooltipTextPaint
-            );
+            float x = rect.Left + 9f;
+            float y = rect.Top + 18f + (i * 16f);
+            canvas.DrawText(lines[i], x, y, SKTextAlign.Left, _tooltipFont, _tooltipTextPaint);
         }
     }
 
@@ -1294,7 +1326,10 @@ internal sealed class TradingChartRenderer : IDisposable
         var width = 0f;
         for (var i = 0; i < segments.Count; i++)
         {
-            width += _axisTextPaint.MeasureText(segments[i].Text);
+            width += (segments[i].IsBold ? _axisBoldFont : _axisFont).MeasureText(
+                segments[i].Text,
+                _axisTextPaint
+            );
             if (i < segments.Count - 1)
             {
                 width += 8f;

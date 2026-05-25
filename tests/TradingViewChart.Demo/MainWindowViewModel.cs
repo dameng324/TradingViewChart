@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Avalonia.Media;
+using Avalonia.Threading;
 using TradingViewChart.Indicators;
 using TradingViewChart.Models;
 
@@ -147,9 +148,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public void OnFrameRendered(RenderEventArgs e)
     {
-        FrameText =
+        var text =
             $"{DateTime.Now:HH:mm:ss.fff} Frame: {e.FrameTime.TotalMilliseconds:F3} ms | Alloc: {e.AllocatedBytes / 1024d:F3} KB";
-        Console.WriteLine(FrameText);
+        Dispatcher.UIThread.Post(() => FrameText = text, DispatcherPriority.Background);
     }
 
     private void ToggleMarkers()
