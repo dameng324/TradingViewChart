@@ -18,15 +18,16 @@ internal sealed class TradingChartDrawOperation : ICustomDrawOperation
 
     public Rect Bounds => _model.Bounds;
 
-    public void Dispose()
-    {
-    }
+    public void Dispose() { }
 
     public bool HitTest(Point p) => Bounds.Contains(p);
 
     public void Render(ImmediateDrawingContext context)
     {
-        if (context.TryGetFeature(typeof(ISkiaSharpApiLeaseFeature)) is not ISkiaSharpApiLeaseFeature leaseFeature)
+        if (
+            context.TryGetFeature(typeof(ISkiaSharpApiLeaseFeature))
+            is not ISkiaSharpApiLeaseFeature leaseFeature
+        )
         {
             return;
         }

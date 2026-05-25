@@ -13,7 +13,8 @@ internal static class TradingChartBrushExtensions
                 solidColorBrush.Color.R,
                 solidColorBrush.Color.G,
                 solidColorBrush.Color.B,
-                solidColorBrush.Color.A);
+                solidColorBrush.Color.A
+            );
         }
 
         return fallback;

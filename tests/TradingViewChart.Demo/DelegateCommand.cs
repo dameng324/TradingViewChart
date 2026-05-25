@@ -8,14 +8,10 @@ internal sealed class DelegateCommand : ICommand
     private readonly Func<object?, bool>? _canExecute;
 
     public DelegateCommand(Action execute)
-        : this(_ => execute(), null)
-    {
-    }
+        : this(_ => execute(), null) { }
 
     public DelegateCommand(Action execute, Func<bool>? canExecute)
-        : this(_ => execute(), canExecute is null ? null : _ => canExecute())
-    {
-    }
+        : this(_ => execute(), canExecute is null ? null : _ => canExecute()) { }
 
     public DelegateCommand(Action<object?> execute, Func<object?, bool>? canExecute = null)
     {

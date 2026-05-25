@@ -9,7 +9,8 @@ public sealed class TradingIndicatorTemplate
         string displayName,
         TradingIndicatorPane pane,
         IReadOnlyList<TradingIndicatorParameterDefinition>? parameters,
-        Func<IReadOnlyDictionary<string, object?>, ITradingIndicator> factory)
+        Func<IReadOnlyDictionary<string, object?>, ITradingIndicator> factory
+    )
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(id);
         ArgumentException.ThrowIfNullOrWhiteSpace(displayName);

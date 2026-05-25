@@ -19,15 +19,15 @@ public sealed class VolumeIndicator : ITradingIndicator
             values[i] = data[i].Volume;
         }
 
-        return new TradingIndicatorResult(
-        [
+        return new TradingIndicatorResult([
             new TradingIndicatorSeries(
                 "VOL",
                 values,
                 Color.Parse("#94A3B8"),
                 IndicatorRenderStyle.Histogram,
                 4d,
-                usePriceDirectionColors: true)
+                usePriceDirectionColors: true
+            ),
         ]);
     }
 
@@ -39,7 +39,8 @@ public sealed class VolumeIndicator : ITradingIndicator
         }
 
         var series = result.Series[0];
-        var value = dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
+        var value =
+            dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
         return value.HasValue ? $"VOL: {FormatVolume(value.Value)}" : "VOL: --";
     }
 
@@ -51,7 +52,7 @@ public sealed class VolumeIndicator : ITradingIndicator
             >= 1_000_000_000d => $"{value / 1_000_000_000d:F2}B",
             >= 1_000_000d => $"{value / 1_000_000d:F2}M",
             >= 1_000d => $"{value / 1_000d:F2}K",
-            _ => value.ToString("F0")
+            _ => value.ToString("F0"),
         };
     }
 }

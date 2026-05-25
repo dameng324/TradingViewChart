@@ -7,7 +7,11 @@ namespace TradingViewChart.Demo;
 
 internal sealed class DemoIndicatorEditor : ITradingChartIndicatorEditor
 {
-    public Task<bool> EditAsync(global::TradingViewChart.TradingViewChart chart, TradingIndicatorEditorRequest request, CancellationToken cancellationToken = default)
+    public Task<bool> EditAsync(
+        global::TradingViewChart.TradingViewChart chart,
+        TradingIndicatorEditorRequest request,
+        CancellationToken cancellationToken = default
+    )
     {
         return DemoIndicatorEditorDialog.ShowAsync(chart, request);
     }
@@ -29,36 +33,30 @@ internal sealed class DemoIndicatorEditorDialog : Window
         CanResize = false;
         WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
-        var root = new StackPanel
-        {
-            Spacing = 12,
-            Margin = new Thickness(16)
-        };
+        var root = new StackPanel { Spacing = 12, Margin = new Thickness(16) };
 
-        root.Children.Add(new TextBlock
-        {
-            Text = request.Item.DisplayName,
-            FontWeight = Avalonia.Media.FontWeight.Bold,
-            FontSize = 16
-        });
+        root.Children.Add(
+            new TextBlock
+            {
+                Text = request.Item.DisplayName,
+                FontWeight = Avalonia.Media.FontWeight.Bold,
+                FontSize = 16,
+            }
+        );
 
         for (var i = 0; i < request.Item.Parameters.Count; i++)
         {
             root.Children.Add(BuildParameterEditor(request.Item.Parameters[i]));
         }
 
-        _hiddenCheckBox = new CheckBox
-        {
-            Content = "Hidden",
-            IsChecked = request.Item.IsHidden
-        };
+        _hiddenCheckBox = new CheckBox { Content = "Hidden", IsChecked = request.Item.IsHidden };
         root.Children.Add(_hiddenCheckBox);
 
         _errorTextBlock = new TextBlock
         {
             Foreground = Avalonia.Media.Brushes.IndianRed,
             IsVisible = false,
-            TextWrapping = Avalonia.Media.TextWrapping.Wrap
+            TextWrapping = Avalonia.Media.TextWrapping.Wrap,
         };
         root.Children.Add(_errorTextBlock);
 
@@ -66,7 +64,7 @@ internal sealed class DemoIndicatorEditorDialog : Window
         {
             Orientation = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Right,
-            Spacing = 8
+            Spacing = 8,
         };
 
         var cancelButton = new Button { Content = "Cancel", MinWidth = 84 };
@@ -107,23 +105,25 @@ internal sealed class DemoIndicatorEditorDialog : Window
         {
             TradingIndicatorParameterKind.Boolean => new CheckBox
             {
-                IsChecked = parameter.Value is bool boolValue && boolValue
+                IsChecked = parameter.Value is bool boolValue && boolValue,
             },
             _ => new TextBox
             {
                 Text = parameter.Value?.ToString() ?? string.Empty,
-                Watermark = parameter.Definition.DefaultValue?.ToString()
-            }
+                Watermark = parameter.Definition.DefaultValue?.ToString(),
+            },
         };
 
         if (!string.IsNullOrWhiteSpace(parameter.Definition.Description))
         {
-            container.Children.Add(new TextBlock
-            {
-                Text = parameter.Definition.Description,
-                Opacity = 0.7,
-                FontSize = 11
-            });
+            container.Children.Add(
+                new TextBlock
+                {
+                    Text = parameter.Definition.Description,
+                    Opacity = 0.7,
+                    FontSize = 11,
+                }
+            );
         }
 
         container.Children.Add(editor);
@@ -158,7 +158,12 @@ internal sealed class DemoIndicatorEditorDialog : Window
         return true;
     }
 
-    private static bool TryParseValue(TradingIndicatorParameterDefinition definition, Control editor, out object? value, out string error)
+    private static bool TryParseValue(
+        TradingIndicatorParameterDefinition definition,
+        Control editor,
+        out object? value,
+        out string error
+    )
     {
         error = string.Empty;
         switch (definition.Kind)
@@ -177,7 +182,10 @@ internal sealed class DemoIndicatorEditorDialog : Window
                 error = $"{definition.DisplayName} must be an integer.";
                 return false;
             case TradingIndicatorParameterKind.Double:
-                if (editor is TextBox doubleBox && double.TryParse(doubleBox.Text, out var doubleValue))
+                if (
+                    editor is TextBox doubleBox
+                    && double.TryParse(doubleBox.Text, out var doubleValue)
+                )
                 {
                     value = doubleValue;
                     return true;

@@ -71,7 +71,9 @@ internal sealed class TradingChartRenderer : IDisposable
         var layout = model.Layout;
         using var _ = new SKAutoCanvasRestore(canvas, true);
         canvas.Translate((float)model.Bounds.X, (float)model.Bounds.Y);
-        canvas.ClipRect(SKRect.Create(0f, 0f, (float)model.Bounds.Width, (float)model.Bounds.Height));
+        canvas.ClipRect(
+            SKRect.Create(0f, 0f, (float)model.Bounds.Width, (float)model.Bounds.Height)
+        );
 
         ConfigureCommonPaints(model);
         DrawBackground(canvas, layout);
@@ -83,9 +85,20 @@ internal sealed class TradingChartRenderer : IDisposable
             return;
         }
 
-        var visibleStart = Math.Clamp(model.VisibleStartIndex, 0, Math.Max(0, model.Data.Count - 1));
+        var visibleStart = Math.Clamp(
+            model.VisibleStartIndex,
+            0,
+            Math.Max(0, model.Data.Count - 1)
+        );
         var visibleEnd = Math.Min(model.Data.Count - 1, visibleStart + model.VisibleCount - 1);
-        var barWidth = (float)Math.Max(2d, Math.Min(18d, layout.Panels[0].BodyBounds.Width / Math.Max(1, model.VisibleCount) * 0.72d));
+        var barWidth = (float)
+            Math.Max(
+                2d,
+                Math.Min(
+                    18d,
+                    layout.Panels[0].BodyBounds.Width / Math.Max(1, model.VisibleCount) * 0.72d
+                )
+            );
 
         var mainPanel = layout.Panels[0];
         var mainRange = CalculateMainRange(model, visibleStart, visibleEnd, 10);
@@ -102,7 +115,13 @@ internal sealed class TradingChartRenderer : IDisposable
         DrawMainIndicators(canvas, mainPanel, mainRange, model, visibleStart, visibleEnd);
         DrawMarkerFlags(canvas, mainPanel, mainRange, model, visibleStart, visibleEnd);
         DrawAxisValues(canvas, mainPanel, mainRange);
-        DrawLatestValueTags(canvas, mainPanel, mainRange, GetLatestValueTags(model.MainIndicators, model, visibleEnd), model);
+        DrawLatestValueTags(
+            canvas,
+            mainPanel,
+            mainRange,
+            GetLatestValueTags(model.MainIndicators, model, visibleEnd),
+            model
+        );
 
         for (var i = 0; i < model.VisibleSubIndicators.Count && i + 1 < layout.Panels.Count; i++)
         {
@@ -113,7 +132,13 @@ internal sealed class TradingChartRenderer : IDisposable
             DrawSubPanelTitle(canvas, panel, model, snapshot);
             DrawSubPanel(canvas, panel, snapshot, range, model, visibleStart, visibleEnd, barWidth);
             DrawAxisValues(canvas, panel, range);
-            DrawLatestValueTags(canvas, panel, range, GetLatestValueTags([snapshot], model, visibleEnd), model);
+            DrawLatestValueTags(
+                canvas,
+                panel,
+                range,
+                GetLatestValueTags([snapshot], model, visibleEnd),
+                model
+            );
         }
 
         DrawMarkers(canvas, layout, mainRange, model, visibleStart, visibleEnd);
@@ -136,7 +161,12 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             if (items[i].Bounds.Contains((float)position.X, (float)position.Y))
             {
-                return new TradingLegendHitTarget(items[i].Item, items[i].OwnerKey, items[i].SeriesName, items[i].Action);
+                return new TradingLegendHitTarget(
+                    items[i].Item,
+                    items[i].OwnerKey,
+                    items[i].SeriesName,
+                    items[i].Action
+                );
             }
         }
 
@@ -158,7 +188,11 @@ internal sealed class TradingChartRenderer : IDisposable
             return null;
         }
 
-        var visibleStart = Math.Clamp(model.VisibleStartIndex, 0, Math.Max(0, model.Data.Count - 1));
+        var visibleStart = Math.Clamp(
+            model.VisibleStartIndex,
+            0,
+            Math.Max(0, model.Data.Count - 1)
+        );
         var visibleEnd = Math.Min(model.Data.Count - 1, visibleStart + model.VisibleCount - 1);
         var mainRange = CalculateMainRange(model, visibleStart, visibleEnd, 10);
 
@@ -173,20 +207,44 @@ internal sealed class TradingChartRenderer : IDisposable
             for (var seriesIndex = 0; seriesIndex < snapshot.Result.Series.Count; seriesIndex++)
             {
                 var series = snapshot.Result.Series[seriesIndex];
-                if (series.RenderStyle != IndicatorRenderStyle.Line ||
-                    model.HiddenSeries.Contains(new TradingSeriesKey(snapshot.OwnerKey, series.Name)))
+                if (
+                    series.RenderStyle != IndicatorRenderStyle.Line
+                    || model.HiddenSeries.Contains(
+                        new TradingSeriesKey(snapshot.OwnerKey, series.Name)
+                    )
+                )
                 {
                     continue;
                 }
 
-                if (HitTestSeriesLine(position, model.Layout.Panels[0].BodyBounds, mainRange, series, visibleStart, visibleEnd, 6f))
+                if (
+                    HitTestSeriesLine(
+                        position,
+                        model.Layout.Panels[0].BodyBounds,
+                        mainRange,
+                        series,
+                        visibleStart,
+                        visibleEnd,
+                        6f
+                    )
+                )
                 {
-                    return new TradingLegendHitTarget(snapshot.Item, snapshot.OwnerKey, series.Name, TradingLegendAction.ToggleSeries);
+                    return new TradingLegendHitTarget(
+                        snapshot.Item,
+                        snapshot.OwnerKey,
+                        series.Name,
+                        TradingLegendAction.ToggleSeries
+                    );
                 }
             }
         }
 
-        for (var panelIndex = 0; panelIndex < model.VisibleSubIndicators.Count && panelIndex + 1 < model.Layout.Panels.Count; panelIndex++)
+        for (
+            var panelIndex = 0;
+            panelIndex < model.VisibleSubIndicators.Count
+                && panelIndex + 1 < model.Layout.Panels.Count;
+            panelIndex++
+        )
         {
             var snapshot = model.VisibleSubIndicators[panelIndex];
             var panel = model.Layout.Panels[panelIndex + 1];
@@ -199,9 +257,24 @@ internal sealed class TradingChartRenderer : IDisposable
                     continue;
                 }
 
-                if (HitTestSeriesLine(position, panel.BodyBounds, range, series, visibleStart, visibleEnd, 6f))
+                if (
+                    HitTestSeriesLine(
+                        position,
+                        panel.BodyBounds,
+                        range,
+                        series,
+                        visibleStart,
+                        visibleEnd,
+                        6f
+                    )
+                )
                 {
-                    return new TradingLegendHitTarget(snapshot.Item, snapshot.OwnerKey, series.Name, TradingLegendAction.ToggleSeries);
+                    return new TradingLegendHitTarget(
+                        snapshot.Item,
+                        snapshot.OwnerKey,
+                        series.Name,
+                        TradingLegendAction.ToggleSeries
+                    );
                 }
             }
         }
@@ -211,11 +284,7 @@ internal sealed class TradingChartRenderer : IDisposable
 
     private static SKPaint CreatePaint(SKPaintStyle style)
     {
-        return new SKPaint
-        {
-            Style = style,
-            IsAntialias = true
-        };
+        return new SKPaint { Style = style, IsAntialias = true };
     }
 
     private static SKPaint CreateTextPaint(float size, SKTextAlign align)
@@ -225,7 +294,7 @@ internal sealed class TradingChartRenderer : IDisposable
             Style = SKPaintStyle.Fill,
             IsAntialias = true,
             TextSize = size,
-            TextAlign = align
+            TextAlign = align,
         };
     }
 
@@ -247,15 +316,28 @@ internal sealed class TradingChartRenderer : IDisposable
 
     private void DrawBackground(SKCanvas canvas, TradingChartLayout layout)
     {
-        canvas.DrawRect(SKRect.Create(0f, 0f, (float)layout.ControlBounds.Width, (float)layout.ControlBounds.Height), _backgroundPaint);
+        canvas.DrawRect(
+            SKRect.Create(
+                0f,
+                0f,
+                (float)layout.ControlBounds.Width,
+                (float)layout.ControlBounds.Height
+            ),
+            _backgroundPaint
+        );
     }
 
-    private void DrawIndicatorButton(SKCanvas canvas, TradingChartLayout layout, TradingChartRenderModel model)
+    private void DrawIndicatorButton(
+        SKCanvas canvas,
+        TradingChartLayout layout,
+        TradingChartRenderModel model
+    )
     {
         var bounds = GetIndicatorButtonBounds(layout);
-        var color = model.SupportedIndicators.Count > 0
-            ? new SKColor(59, 130, 246, 42)
-            : new SKColor(148, 163, 184, 28);
+        var color =
+            model.SupportedIndicators.Count > 0
+                ? new SKColor(59, 130, 246, 42)
+                : new SKColor(148, 163, 184, 28);
         _legendBackgroundPaint.Color = color;
         canvas.DrawRoundRect(bounds, 6f, 6f, _legendBackgroundPaint);
         _axisTextPaint.Color = model.TextColor;
@@ -264,15 +346,21 @@ internal sealed class TradingChartRenderer : IDisposable
 
     private static SKRect GetIndicatorButtonBounds(TradingChartLayout layout)
     {
-        var right = layout.Panels.Count > 0
-            ? (float)(layout.Panels[0].BodyBounds.Right - 12d)
-            : (float)(layout.ControlBounds.Right - layout.YAxisWidth - 12d);
+        var right =
+            layout.Panels.Count > 0
+                ? (float)(layout.Panels[0].BodyBounds.Right - 12d)
+                : (float)(layout.ControlBounds.Right - layout.YAxisWidth - 12d);
         return SKRect.Create(right - 92f, (float)layout.OuterPadding, 92f, 22f);
     }
 
     private void DrawEmptyState(SKCanvas canvas, TradingChartLayout layout)
     {
-        canvas.DrawText("No trading data", (float)(layout.ControlBounds.Width / 2d), (float)(layout.ControlBounds.Height / 2d), _centerAxisTextPaint);
+        canvas.DrawText(
+            "No trading data",
+            (float)(layout.ControlBounds.Width / 2d),
+            (float)(layout.ControlBounds.Height / 2d),
+            _centerAxisTextPaint
+        );
     }
 
     private void DrawGrid(SKCanvas canvas, TradingChartPanelLayout panel, TradingValueRange range)
@@ -291,14 +379,24 @@ internal sealed class TradingChartRenderer : IDisposable
             canvas.DrawLine((float)body.Left, y, (float)body.Right, y, _gridPaint);
         }
 
-        canvas.DrawLine((float)panel.AxisBounds.Left, (float)panel.Bounds.Top, (float)panel.AxisBounds.Left, (float)panel.Bounds.Bottom, _gridPaint);
+        canvas.DrawLine(
+            (float)panel.AxisBounds.Left,
+            (float)panel.Bounds.Top,
+            (float)panel.AxisBounds.Left,
+            (float)panel.Bounds.Bottom,
+            _gridPaint
+        );
     }
 
-    private void DrawMainPanelTitle(SKCanvas canvas, TradingChartPanelLayout panel, TradingChartRenderModel model)
+    private void DrawMainPanelTitle(
+        SKCanvas canvas,
+        TradingChartPanelLayout panel,
+        TradingChartRenderModel model
+    )
     {
         var y = (float)panel.Bounds.Top + 15f;
         _axisTextPaint.Color = model.TextColor;
-        canvas.DrawText("PRICE", (float)panel.Bounds.Left + 4f, y, _axisTextPaint);
+        canvas.DrawText(model.ChartTitle, (float)panel.Bounds.Left + 4f, y, _axisTextPaint);
 
         var items = BuildLegendItems(model);
         for (var i = 0; i < items.Count; i++)
@@ -310,7 +408,12 @@ internal sealed class TradingChartRenderer : IDisposable
         }
     }
 
-    private void DrawSubPanelTitle(SKCanvas canvas, TradingChartPanelLayout panel, TradingChartRenderModel model, TradingIndicatorSnapshot snapshot)
+    private void DrawSubPanelTitle(
+        SKCanvas canvas,
+        TradingChartPanelLayout panel,
+        TradingChartRenderModel model,
+        TradingIndicatorSnapshot snapshot
+    )
     {
         var items = BuildLegendItems(model);
         var baselineY = (float)panel.Bounds.Top + 15f;
@@ -324,11 +427,20 @@ internal sealed class TradingChartRenderer : IDisposable
         }
     }
 
-    private void DrawLegendItem(SKCanvas canvas, LegendItem item, TradingChartRenderModel model, float baselineY)
+    private void DrawLegendItem(
+        SKCanvas canvas,
+        LegendItem item,
+        TradingChartRenderModel model,
+        float baselineY
+    )
     {
         var isHovered = false;
-        var baseColor = item.IsHidden ? new SKColor(148, 163, 184, 60) : new SKColor(148, 163, 184, 28);
-        var hoverColor = item.IsHidden ? new SKColor(148, 163, 184, 92) : new SKColor(148, 163, 184, 54);
+        var baseColor = item.IsHidden
+            ? new SKColor(148, 163, 184, 60)
+            : new SKColor(148, 163, 184, 28);
+        var hoverColor = item.IsHidden
+            ? new SKColor(148, 163, 184, 92)
+            : new SKColor(148, 163, 184, 54);
         _legendBackgroundPaint.Color = isHovered ? hoverColor : baseColor;
         canvas.DrawRoundRect(item.Bounds, 5f, 5f, _legendBackgroundPaint);
 
@@ -356,7 +468,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingChartRenderModel model,
         int visibleStart,
         int visibleEnd,
-        float barWidth)
+        float barWidth
+    )
     {
         for (var index = visibleStart; index <= visibleEnd; index++)
         {
@@ -375,7 +488,10 @@ internal sealed class TradingChartRenderer : IDisposable
             var top = Math.Min(openY, closeY);
             var bottom = Math.Max(openY, closeY);
             var height = Math.Max(1f, bottom - top);
-            canvas.DrawRect(SKRect.Create(x - (barWidth / 2f), top, barWidth, height), _candleBodyPaint);
+            canvas.DrawRect(
+                SKRect.Create(x - (barWidth / 2f), top, barWidth, height),
+                _candleBodyPaint
+            );
         }
     }
 
@@ -385,7 +501,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange range,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         _linePaint.Color = model.TextColor.WithAlpha(220);
         _linePaint.StrokeWidth = 1.8f;
@@ -420,7 +537,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange range,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         for (var snapshotIndex = 0; snapshotIndex < model.MainIndicators.Count; snapshotIndex++)
         {
@@ -433,18 +551,17 @@ internal sealed class TradingChartRenderer : IDisposable
             for (var seriesIndex = 0; seriesIndex < snapshot.Result.Series.Count; seriesIndex++)
             {
                 var series = snapshot.Result.Series[seriesIndex];
-                if (series.RenderStyle != IndicatorRenderStyle.Line || model.HiddenSeries.Contains(new TradingSeriesKey(snapshot.OwnerKey, series.Name)))
+                if (
+                    series.RenderStyle != IndicatorRenderStyle.Line
+                    || model.HiddenSeries.Contains(
+                        new TradingSeriesKey(snapshot.OwnerKey, series.Name)
+                    )
+                )
                 {
                     continue;
                 }
 
-                DrawSeriesLine(
-                    canvas,
-                    panel.BodyBounds,
-                    range,
-                    series,
-                    visibleStart,
-                    visibleEnd);
+                DrawSeriesLine(canvas, panel.BodyBounds, range, series, visibleStart, visibleEnd);
             }
         }
     }
@@ -457,24 +574,28 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingChartRenderModel model,
         int visibleStart,
         int visibleEnd,
-        float barWidth)
+        float barWidth
+    )
     {
         for (var i = 0; i < snapshot.Result.Series.Count; i++)
         {
             var series = snapshot.Result.Series[i];
             if (series.RenderStyle == IndicatorRenderStyle.Histogram)
             {
-                DrawHistogram(canvas, panel.BodyBounds, range, series, model, visibleStart, visibleEnd, barWidth);
-            }
-            else
-            {
-                DrawSeriesLine(
+                DrawHistogram(
                     canvas,
                     panel.BodyBounds,
                     range,
                     series,
+                    model,
                     visibleStart,
-                    visibleEnd);
+                    visibleEnd,
+                    barWidth
+                );
+            }
+            else
+            {
+                DrawSeriesLine(canvas, panel.BodyBounds, range, series, visibleStart, visibleEnd);
             }
         }
     }
@@ -485,7 +606,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange range,
         TradingIndicatorSeries series,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         _linePaint.Color = ToSkColor(series.Stroke);
         _linePaint.StrokeWidth = (float)Math.Max(1d, series.Thickness);
@@ -527,7 +649,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingChartRenderModel model,
         int visibleStart,
         int visibleEnd,
-        float barWidth)
+        float barWidth
+    )
     {
         var zeroY = GetY(bodyBounds, range, 0d);
         _histogramPaint.StrokeWidth = Math.Max(1f, barWidth);
@@ -542,9 +665,10 @@ internal sealed class TradingChartRenderer : IDisposable
 
             var x = GetX(bodyBounds, visibleStart, visibleEnd - visibleStart + 1, index);
             var y = GetY(bodyBounds, range, value.Value);
-            _histogramPaint.Color = series.UsePriceDirectionColors
-                ? ResolveCandleColor(model, model.Data[index])
-                : value.Value >= 0d ? model.UpColor : model.DownColor;
+            _histogramPaint.Color =
+                series.UsePriceDirectionColors ? ResolveCandleColor(model, model.Data[index])
+                : value.Value >= 0d ? model.UpColor
+                : model.DownColor;
             canvas.DrawLine(x, zeroY, x, y, _histogramPaint);
         }
     }
@@ -555,7 +679,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange range,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         foreach (var index in model.MarkedIndices)
         {
@@ -581,7 +706,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange mainRange,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         if (model.Markers.Count == 0)
         {
@@ -597,7 +723,15 @@ internal sealed class TradingChartRenderer : IDisposable
                 continue;
             }
 
-            var anchor = ResolveMarkerAnchor(layout, mainRange, model, marker, index, visibleStart, visibleEnd);
+            var anchor = ResolveMarkerAnchor(
+                layout,
+                mainRange,
+                model,
+                marker,
+                index,
+                visibleStart,
+                visibleEnd
+            );
             if (!anchor.HasValue)
             {
                 continue;
@@ -606,7 +740,9 @@ internal sealed class TradingChartRenderer : IDisposable
             var x = GetX(layout.Panels[0].BodyBounds, visibleStart, model.VisibleCount, index);
             var offset = marker.Placement == TradingMarkerPlacement.Above ? -16f : 16f;
             var y = anchor.Value.Y + offset;
-            var color = marker.Color.HasValue ? ToSkColor(marker.Color.Value) : new SKColor(245, 158, 11);
+            var color = marker.Color.HasValue
+                ? ToSkColor(marker.Color.Value)
+                : new SKColor(245, 158, 11);
             _markerPaint.Color = color;
             DrawMarkerShape(canvas, marker.Shape, x, y, 6f);
 
@@ -618,14 +754,24 @@ internal sealed class TradingChartRenderer : IDisposable
         }
     }
 
-    private void DrawAxisValues(SKCanvas canvas, TradingChartPanelLayout panel, TradingValueRange range)
+    private void DrawAxisValues(
+        SKCanvas canvas,
+        TradingChartPanelLayout panel,
+        TradingValueRange range
+    )
     {
         var axisX = (float)panel.AxisBounds.Left + 6f;
         for (var i = 0; i < range.Ticks.Count; i++)
         {
             var value = range.Ticks[i];
             var y = GetY(panel.BodyBounds, range, value);
-            var baseline = y + (i == 0 ? 12f : i == range.Ticks.Count - 1 ? -2f : 4f);
+            var baseline =
+                y
+                + (
+                    i == 0 ? 12f
+                    : i == range.Ticks.Count - 1 ? -2f
+                    : 4f
+                );
             canvas.DrawText(FormatAxisValue(value, range.Step), axisX, baseline, _axisTextPaint);
         }
     }
@@ -635,7 +781,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingChartPanelLayout panel,
         TradingValueRange range,
         IReadOnlyList<LatestValueTag> tags,
-        TradingChartRenderModel model)
+        TradingChartRenderModel model
+    )
     {
         if (tags.Count == 0)
         {
@@ -645,7 +792,9 @@ internal sealed class TradingChartRenderer : IDisposable
         _latestValuePlacements.Clear();
         for (var i = 0; i < tags.Count; i++)
         {
-            _latestValuePlacements.Add(new LatestValueTagPlacement(tags[i], GetY(panel.BodyBounds, range, tags[i].Value)));
+            _latestValuePlacements.Add(
+                new LatestValueTagPlacement(tags[i], GetY(panel.BodyBounds, range, tags[i].Value))
+            );
         }
 
         _latestValuePlacements.Sort((left, right) => left.Y.CompareTo(right.Y));
@@ -668,7 +817,10 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             if (_latestValuePlacements[i + 1].Y - _latestValuePlacements[i].Y < minGap)
             {
-                _latestValuePlacements[i] = _latestValuePlacements[i] with { Y = Math.Max(minY, _latestValuePlacements[i + 1].Y - minGap) };
+                _latestValuePlacements[i] = _latestValuePlacements[i] with
+                {
+                    Y = Math.Max(minY, _latestValuePlacements[i + 1].Y - minGap),
+                };
             }
         }
 
@@ -676,7 +828,12 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             var label = _latestValuePlacements[i].Tag.Text;
             var width = _tooltipTextPaint.MeasureText(label) + 10f;
-            var rect = SKRect.Create((float)panel.AxisBounds.Left + 2f, _latestValuePlacements[i].Y - 9f, width, 18f);
+            var rect = SKRect.Create(
+                (float)panel.AxisBounds.Left + 2f,
+                _latestValuePlacements[i].Y - 9f,
+                width,
+                18f
+            );
             _valueTagBackgroundPaint.Color = _latestValuePlacements[i].Tag.Color;
             canvas.DrawRoundRect(rect, 4f, 4f, _valueTagBackgroundPaint);
             _tooltipTextPaint.Color = SKColors.White;
@@ -694,11 +851,23 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             var splitter = layout.Splitters[i].Bounds;
             var lineY = (float)(splitter.Y + (splitter.Height / 2d));
-            canvas.DrawLine((float)splitter.Left + 20f, lineY, (float)splitter.Right - 20f, lineY, _splitterPaint);
+            canvas.DrawLine(
+                (float)splitter.Left + 20f,
+                lineY,
+                (float)splitter.Right - 20f,
+                lineY,
+                _splitterPaint
+            );
         }
     }
 
-    private void DrawXAxis(SKCanvas canvas, TradingChartLayout layout, TradingChartRenderModel model, int visibleStart, int visibleEnd)
+    private void DrawXAxis(
+        SKCanvas canvas,
+        TradingChartLayout layout,
+        TradingChartRenderModel model,
+        int visibleStart,
+        int visibleEnd
+    )
     {
         var tickCount = Math.Min(5, visibleEnd - visibleStart + 1);
         if (tickCount <= 0)
@@ -713,7 +882,10 @@ internal sealed class TradingChartRenderer : IDisposable
             index = Math.Clamp(index, visibleStart, visibleEnd);
             var x = GetX(layout.XAxisBounds, visibleStart, model.VisibleCount, index);
             var label = model.Data[index].Time.ToString(model.XAxisLabelFormat);
-            _axisTextPaint.TextAlign = tick == 0 ? SKTextAlign.Left : tick == tickCount - 1 ? SKTextAlign.Right : SKTextAlign.Center;
+            _axisTextPaint.TextAlign =
+                tick == 0 ? SKTextAlign.Left
+                : tick == tickCount - 1 ? SKTextAlign.Right
+                : SKTextAlign.Center;
             canvas.DrawText(label, x, (float)layout.XAxisBounds.Bottom - 6f, _axisTextPaint);
         }
 
@@ -726,9 +898,15 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange mainRange,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
-        if (!model.ShowCrosshair || model.CrosshairIndex < visibleStart || model.CrosshairIndex > visibleEnd || layout.Panels.Count == 0)
+        if (
+            !model.ShowCrosshair
+            || model.CrosshairIndex < visibleStart
+            || model.CrosshairIndex > visibleEnd
+            || layout.Panels.Count == 0
+        )
         {
             return;
         }
@@ -741,26 +919,56 @@ internal sealed class TradingChartRenderer : IDisposable
             return;
         }
 
-        canvas.DrawLine(x, (float)layout.Panels[0].BodyBounds.Top, x, (float)layout.XAxisBounds.Top, _crosshairPaint);
-        canvas.DrawLine((float)target.Value.Panel.BodyBounds.Left, target.Value.Y, (float)target.Value.Panel.BodyBounds.Right, target.Value.Y, _crosshairPaint);
+        canvas.DrawLine(
+            x,
+            (float)layout.Panels[0].BodyBounds.Top,
+            x,
+            (float)layout.XAxisBounds.Top,
+            _crosshairPaint
+        );
+        canvas.DrawLine(
+            (float)target.Value.Panel.BodyBounds.Left,
+            target.Value.Y,
+            (float)target.Value.Panel.BodyBounds.Right,
+            target.Value.Y,
+            _crosshairPaint
+        );
         canvas.DrawCircle(x, target.Value.Y, 3.5f, _crosshairPointPaint);
 
         var label = model.Data[model.CrosshairIndex].Time.ToString(model.XAxisLabelFormat);
         var textWidth = _tooltipTextPaint.MeasureText(label);
-        var rect = SKRect.Create(x - (textWidth / 2f) - 6f, (float)layout.XAxisBounds.Top + 2f, textWidth + 12f, 18f);
+        var rect = SKRect.Create(
+            x - (textWidth / 2f) - 6f,
+            (float)layout.XAxisBounds.Top + 2f,
+            textWidth + 12f,
+            18f
+        );
         canvas.DrawRect(rect, _tooltipBackgroundPaint);
         canvas.DrawText(label, rect.MidX, rect.Bottom - 5f, _centerTooltipTextPaint);
 
         var valueLabel = FormatValue(target.Value.Value);
         var valueWidth = _tooltipTextPaint.MeasureText(valueLabel);
-        var valueRect = SKRect.Create((float)(target.Value.Panel.AxisBounds.Left + 2d), target.Value.Y - 9f, valueWidth + 10f, 18f);
+        var valueRect = SKRect.Create(
+            (float)(target.Value.Panel.AxisBounds.Left + 2d),
+            target.Value.Y - 9f,
+            valueWidth + 10f,
+            18f
+        );
         canvas.DrawRect(valueRect, _tooltipBackgroundPaint);
         canvas.DrawText(valueLabel, valueRect.Left + 5f, valueRect.Bottom - 5f, _tooltipTextPaint);
     }
 
-    private void DrawTooltip(SKCanvas canvas, TradingChartLayout layout, TradingChartRenderModel model)
+    private void DrawTooltip(
+        SKCanvas canvas,
+        TradingChartLayout layout,
+        TradingChartRenderModel model
+    )
     {
-        if (!model.ShowCrosshair || model.CrosshairIndex < 0 || model.CrosshairIndex >= model.Data.Count)
+        if (
+            !model.ShowCrosshair
+            || model.CrosshairIndex < 0
+            || model.CrosshairIndex >= model.Data.Count
+        )
         {
             return;
         }
@@ -771,7 +979,7 @@ internal sealed class TradingChartRenderer : IDisposable
             Span<string> priceLines =
             [
                 $"Time  {point.Time.ToString(model.XAxisLabelFormat)}",
-                $"Price  {point.Close:F2}"
+                $"Price  {point.Close:F2}",
             ];
 
             var priceWidth = 0f;
@@ -783,12 +991,22 @@ internal sealed class TradingChartRenderer : IDisposable
             priceWidth += 18f;
             var priceHeight = 16f + (priceLines.Length * 16f);
             var pricePosition = ResolveTooltipPosition(model, layout, priceWidth, priceHeight);
-            var priceRect = SKRect.Create(pricePosition.X, pricePosition.Y, priceWidth, priceHeight);
+            var priceRect = SKRect.Create(
+                pricePosition.X,
+                pricePosition.Y,
+                priceWidth,
+                priceHeight
+            );
             canvas.DrawRoundRect(priceRect, 8f, 8f, _tooltipBackgroundPaint);
 
             for (var i = 0; i < priceLines.Length; i++)
             {
-                canvas.DrawText(priceLines[i], priceRect.Left + 9f, priceRect.Top + 18f + (i * 16f), _tooltipTextPaint);
+                canvas.DrawText(
+                    priceLines[i],
+                    priceRect.Left + 9f,
+                    priceRect.Top + 18f + (i * 16f),
+                    _tooltipTextPaint
+                );
             }
 
             return;
@@ -802,7 +1020,7 @@ internal sealed class TradingChartRenderer : IDisposable
             $"O/H/L/C  {point.Open:F2} / {point.High:F2} / {point.Low:F2} / {point.Close:F2}",
             $"Change  {changePercentage:+0.00;-0.00;0.00}%",
             $"Turnover  {FormatVolume(point.Turnover)}",
-            $"Volume  {FormatVolume(point.Volume)}"
+            $"Volume  {FormatVolume(point.Volume)}",
         ];
 
         var width = 0f;
@@ -819,24 +1037,45 @@ internal sealed class TradingChartRenderer : IDisposable
 
         for (var i = 0; i < lines.Length; i++)
         {
-            canvas.DrawText(lines[i], rect.Left + 9f, rect.Top + 18f + (i * 16f), _tooltipTextPaint);
+            canvas.DrawText(
+                lines[i],
+                rect.Left + 9f,
+                rect.Top + 18f + (i * 16f),
+                _tooltipTextPaint
+            );
         }
     }
 
-    private static SKPoint ResolveTooltipPosition(TradingChartRenderModel model, TradingChartLayout layout, float width, float height)
+    private static SKPoint ResolveTooltipPosition(
+        TradingChartRenderModel model,
+        TradingChartLayout layout,
+        float width,
+        float height
+    )
     {
         return model.CrosshairHintMode switch
         {
             CrosshairHintMode.FollowMouse => new SKPoint(
-                (float)Math.Clamp(model.PointerPosition.X + 16d, 4d, layout.ControlBounds.Width - width - 4d),
-                (float)Math.Clamp(model.PointerPosition.Y + 16d, 34d, layout.ControlBounds.Height - height - 4d)),
-            _ => new SKPoint(10f, 34f)
+                (float)
+                    Math.Clamp(
+                        model.PointerPosition.X + 16d,
+                        4d,
+                        layout.ControlBounds.Width - width - 4d
+                    ),
+                (float)
+                    Math.Clamp(
+                        model.PointerPosition.Y + 16d,
+                        34d,
+                        layout.ControlBounds.Height - height - 4d
+                    )
+            ),
+            _ => new SKPoint(10f, 34f),
         };
     }
 
     private List<LegendItem> BuildLegendItems(TradingChartRenderModel model)
     {
-        var _legendItems = new List<LegendItem>();
+        List<LegendItem> _legendItems = new();
         if (model.Layout.Panels.Count == 0)
         {
             return _legendItems;
@@ -849,9 +1088,28 @@ internal sealed class TradingChartRenderer : IDisposable
         for (var snapshotIndex = 0; snapshotIndex < model.MainIndicators.Count; snapshotIndex++)
         {
             var snapshot = model.MainIndicators[snapshotIndex];
-            var titleSegments = new[] { new LegendSegment(snapshot.DisplayName, model.TextColor, true) };
-            var titleBounds = SKRect.Create(x, top, MeasureLegendSegments(titleSegments) + 12f, 18f);
-            _legendItems.Add(new LegendItem(0, snapshot.Item, snapshot.OwnerKey, null, TradingLegendAction.IndicatorMenu, snapshot.IsHidden, titleBounds, titleSegments));
+            var titleSegments = new[]
+            {
+                new LegendSegment(snapshot.DisplayName, model.TextColor, true),
+            };
+            var titleBounds = SKRect.Create(
+                x,
+                top,
+                MeasureLegendSegments(titleSegments) + 12f,
+                18f
+            );
+            _legendItems.Add(
+                new LegendItem(
+                    0,
+                    snapshot.Item,
+                    snapshot.OwnerKey,
+                    null,
+                    TradingLegendAction.IndicatorMenu,
+                    snapshot.IsHidden,
+                    titleBounds,
+                    titleSegments
+                )
+            );
             x = titleBounds.Right + 6f;
             if (snapshot.IsHidden)
             {
@@ -867,11 +1125,23 @@ internal sealed class TradingChartRenderer : IDisposable
                     new LegendSegment(
                         BuildSeriesValueText(series, model.CrosshairIndex),
                         model.HiddenSeries.Contains(key) ? InactiveColor : ToSkColor(series.Stroke),
-                        false)
+                        false
+                    ),
                 };
                 var width = MeasureLegendSegments(segments) + 12f;
                 var bounds = SKRect.Create(x, top, width, 18f);
-                _legendItems.Add(new LegendItem(0, snapshot.Item, snapshot.OwnerKey, series.Name, TradingLegendAction.ToggleSeries, model.HiddenSeries.Contains(key), bounds, segments));
+                _legendItems.Add(
+                    new LegendItem(
+                        0,
+                        snapshot.Item,
+                        snapshot.OwnerKey,
+                        series.Name,
+                        TradingLegendAction.ToggleSeries,
+                        model.HiddenSeries.Contains(key),
+                        bounds,
+                        segments
+                    )
+                );
                 x = bounds.Right + 6f;
             }
         }
@@ -887,24 +1157,59 @@ internal sealed class TradingChartRenderer : IDisposable
             var segments = new[] { new LegendSegment(snapshot.DisplayName, InactiveColor, true) };
             var width = MeasureLegendSegments(segments) + 12f;
             var bounds = SKRect.Create(x, top, width, 18f);
-            _legendItems.Add(new LegendItem(0, snapshot.Item, snapshot.OwnerKey, null, TradingLegendAction.IndicatorMenu, true, bounds, segments));
+            _legendItems.Add(
+                new LegendItem(
+                    0,
+                    snapshot.Item,
+                    snapshot.OwnerKey,
+                    null,
+                    TradingLegendAction.IndicatorMenu,
+                    true,
+                    bounds,
+                    segments
+                )
+            );
             x = bounds.Right + 6f;
         }
 
-        for (var panelIndex = 0; panelIndex < model.VisibleSubIndicators.Count && panelIndex + 1 < model.Layout.Panels.Count; panelIndex++)
+        for (
+            var panelIndex = 0;
+            panelIndex < model.VisibleSubIndicators.Count
+                && panelIndex + 1 < model.Layout.Panels.Count;
+            panelIndex++
+        )
         {
             var panel = model.Layout.Panels[panelIndex + 1];
             var snapshot = model.VisibleSubIndicators[panelIndex];
             var segments = BuildSubPanelSegments(snapshot, model);
             var width = MeasureLegendSegments(segments) + 12f;
-            var bounds = SKRect.Create((float)panel.Bounds.Left + 4f, (float)panel.Bounds.Top + 3f, width, 18f);
-            _legendItems.Add(new LegendItem(panel.Index, snapshot.Item, snapshot.OwnerKey, null, TradingLegendAction.IndicatorMenu, false, bounds, segments));
+            var bounds = SKRect.Create(
+                (float)panel.Bounds.Left + 4f,
+                (float)panel.Bounds.Top + 3f,
+                width,
+                18f
+            );
+            _legendItems.Add(
+                new LegendItem(
+                    panel.Index,
+                    snapshot.Item,
+                    snapshot.OwnerKey,
+                    null,
+                    TradingLegendAction.IndicatorMenu,
+                    false,
+                    bounds,
+                    segments
+                )
+            );
         }
 
         return _legendItems;
     }
 
-    private LegendSegment[] BuildSubPanelSegments(TradingIndicatorSnapshot snapshot, TradingChartRenderModel model)
+    private LegendSegment[] BuildSubPanelSegments(
+        TradingIndicatorSnapshot snapshot,
+        TradingChartRenderModel model
+    )
     {
         var segments = new LegendSegment[snapshot.Result.Series.Count + 1];
         segments[0] = new LegendSegment(snapshot.DisplayName, model.TextColor, true);
@@ -914,13 +1219,18 @@ internal sealed class TradingChartRenderer : IDisposable
             segments[i + 1] = new LegendSegment(
                 BuildSeriesValueText(series, model.CrosshairIndex),
                 ToSkColor(series.Stroke),
-                false);
+                false
+            );
         }
 
         return segments;
     }
 
-    private List<LatestValueTag> GetLatestValueTags(IReadOnlyList<TradingIndicatorSnapshot> snapshots, TradingChartRenderModel model, int dataIndex)
+    private List<LatestValueTag> GetLatestValueTags(
+        IReadOnlyList<TradingIndicatorSnapshot> snapshots,
+        TradingChartRenderModel model,
+        int dataIndex
+    )
     {
         _latestValueTags.Clear();
         for (var snapshotIndex = 0; snapshotIndex < snapshots.Count; snapshotIndex++)
@@ -945,11 +1255,14 @@ internal sealed class TradingChartRenderer : IDisposable
                     continue;
                 }
 
-                _latestValueTags.Add(new LatestValueTag(
-                    value.Value,
-                    BuildSeriesValueText(series, dataIndex),
-                    ToSkColor(series.Stroke),
-                    false));
+                _latestValueTags.Add(
+                    new LatestValueTag(
+                        value.Value,
+                        BuildSeriesValueText(series, dataIndex),
+                        ToSkColor(series.Stroke),
+                        false
+                    )
+                );
             }
         }
 
@@ -958,8 +1271,11 @@ internal sealed class TradingChartRenderer : IDisposable
 
     private static string BuildSeriesValueText(TradingIndicatorSeries series, int dataIndex)
     {
-        var value = dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
-        return value.HasValue ? $"{series.Name}: {FormatSeriesValue(value.Value)}" : $"{series.Name}: --";
+        var value =
+            dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
+        return value.HasValue
+            ? $"{series.Name}: {FormatSeriesValue(value.Value)}"
+            : $"{series.Name}: --";
     }
 
     private static string FormatSeriesValue(double value)
@@ -969,7 +1285,7 @@ internal sealed class TradingChartRenderer : IDisposable
             >= 1000d => value.ToString("F0"),
             >= 100d => value.ToString("F1"),
             >= 1d => value.ToString("F2"),
-            _ => value.ToString("F3")
+            _ => value.ToString("F3"),
         };
     }
 
@@ -993,19 +1309,33 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingValueRange mainRange,
         TradingChartRenderModel model,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         var panelIndex = Math.Clamp(model.ActivePanelIndex, 0, layout.Panels.Count - 1);
         if (panelIndex == 0)
         {
             if (model.CrosshairValueMode == CrosshairValueMode.FollowPointer)
             {
-                var y = (float)Math.Clamp(model.PointerPosition.Y, layout.Panels[0].BodyBounds.Top, layout.Panels[0].BodyBounds.Bottom);
-                return new CrosshairTarget(layout.Panels[0], y, GetValueAtY(layout.Panels[0].BodyBounds, mainRange, y));
+                var y = (float)
+                    Math.Clamp(
+                        model.PointerPosition.Y,
+                        layout.Panels[0].BodyBounds.Top,
+                        layout.Panels[0].BodyBounds.Bottom
+                    );
+                return new CrosshairTarget(
+                    layout.Panels[0],
+                    y,
+                    GetValueAtY(layout.Panels[0].BodyBounds, mainRange, y)
+                );
             }
 
             var value = model.Data[model.CrosshairIndex].Close;
-            return new CrosshairTarget(layout.Panels[0], GetY(layout.Panels[0].BodyBounds, mainRange, value), value);
+            return new CrosshairTarget(
+                layout.Panels[0],
+                GetY(layout.Panels[0].BodyBounds, mainRange, value),
+                value
+            );
         }
 
         if (panelIndex - 1 >= model.VisibleSubIndicators.Count)
@@ -1018,7 +1348,8 @@ internal sealed class TradingChartRenderer : IDisposable
         var range = CalculateIndicatorRange(snapshot, visibleStart, visibleEnd, 6);
         if (model.CrosshairValueMode == CrosshairValueMode.FollowPointer)
         {
-            var y = (float)Math.Clamp(model.PointerPosition.Y, panel.BodyBounds.Top, panel.BodyBounds.Bottom);
+            var y = (float)
+                Math.Clamp(model.PointerPosition.Y, panel.BodyBounds.Top, panel.BodyBounds.Bottom);
             return new CrosshairTarget(panel, y, GetValueAtY(panel.BodyBounds, range, y));
         }
 
@@ -1053,7 +1384,12 @@ internal sealed class TradingChartRenderer : IDisposable
         return bestValue.HasValue ? new CrosshairTarget(panel, bestY, bestValue.Value) : null;
     }
 
-    private static TradingValueRange CalculateMainRange(TradingChartRenderModel model, int visibleStart, int visibleEnd, int maxTickCount)
+    private static TradingValueRange CalculateMainRange(
+        TradingChartRenderModel model,
+        int visibleStart,
+        int visibleEnd,
+        int maxTickCount
+    )
     {
         var min = double.MaxValue;
         var max = double.MinValue;
@@ -1075,12 +1411,20 @@ internal sealed class TradingChartRenderer : IDisposable
             for (var seriesIndex = 0; seriesIndex < snapshot.Result.Series.Count; seriesIndex++)
             {
                 var series = snapshot.Result.Series[seriesIndex];
-                if (model.HiddenSeries.Contains(new TradingSeriesKey(snapshot.OwnerKey, series.Name)))
+                if (
+                    model.HiddenSeries.Contains(
+                        new TradingSeriesKey(snapshot.OwnerKey, series.Name)
+                    )
+                )
                 {
                     continue;
                 }
 
-                for (var index = visibleStart; index <= visibleEnd && index < series.Values.Count; index++)
+                for (
+                    var index = visibleStart;
+                    index <= visibleEnd && index < series.Values.Count;
+                    index++
+                )
                 {
                     var value = series.Values[index];
                     if (value.HasValue)
@@ -1095,7 +1439,12 @@ internal sealed class TradingChartRenderer : IDisposable
         return TradingValueRange.Create(min, max, maxTickCount);
     }
 
-    private static TradingValueRange CalculateIndicatorRange(TradingIndicatorSnapshot snapshot, int visibleStart, int visibleEnd, int maxTickCount)
+    private static TradingValueRange CalculateIndicatorRange(
+        TradingIndicatorSnapshot snapshot,
+        int visibleStart,
+        int visibleEnd,
+        int maxTickCount
+    )
     {
         var min = double.MaxValue;
         var max = double.MinValue;
@@ -1109,7 +1458,11 @@ internal sealed class TradingChartRenderer : IDisposable
                 includeZero = true;
             }
 
-            for (var index = visibleStart; index <= visibleEnd && index < series.Values.Count; index++)
+            for (
+                var index = visibleStart;
+                index <= visibleEnd && index < series.Values.Count;
+                index++
+            )
             {
                 var value = series.Values[index];
                 if (value.HasValue)
@@ -1135,22 +1488,19 @@ internal sealed class TradingChartRenderer : IDisposable
         {
             >= 1000d => value.ToString("F0"),
             >= 100d => value.ToString("F1"),
-            _ => value.ToString("F2")
+            _ => value.ToString("F2"),
         };
     }
 
     private static string FormatAxisValue(double value, double step)
     {
         var absStep = Math.Abs(step);
-        var decimals = absStep >= 10d
-            ? 0
-            : absStep >= 1d
-                ? 1
-                : absStep >= 0.1d
-                    ? 2
-                    : absStep >= 0.01d
-                        ? 3
-                        : 4;
+        var decimals =
+            absStep >= 10d ? 0
+            : absStep >= 1d ? 1
+            : absStep >= 0.1d ? 2
+            : absStep >= 0.01d ? 3
+            : 4;
         return value.ToString($"F{decimals}");
     }
 
@@ -1162,7 +1512,7 @@ internal sealed class TradingChartRenderer : IDisposable
             >= 1_000_000_000d => $"{value / 1_000_000_000d:F2}B",
             >= 1_000_000d => $"{value / 1_000_000d:F2}M",
             >= 1_000d => $"{value / 1_000d:F2}K",
-            _ => value.ToString("F0")
+            _ => value.ToString("F0"),
         };
     }
 
@@ -1199,7 +1549,8 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingMarker marker,
         int dataIndex,
         int visibleStart,
-        int visibleEnd)
+        int visibleEnd
+    )
     {
         if (string.IsNullOrWhiteSpace(marker.IndicatorId))
         {
@@ -1212,7 +1563,13 @@ internal sealed class TradingChartRenderer : IDisposable
         for (var panelIndex = 0; panelIndex < model.VisibleSubIndicators.Count; panelIndex++)
         {
             var snapshot = model.VisibleSubIndicators[panelIndex];
-            if (!string.Equals(snapshot.Indicator.Id, marker.IndicatorId, StringComparison.OrdinalIgnoreCase))
+            if (
+                !string.Equals(
+                    snapshot.Indicator.Id,
+                    marker.IndicatorId,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
                 continue;
             }
@@ -1222,7 +1579,14 @@ internal sealed class TradingChartRenderer : IDisposable
             for (var seriesIndex = 0; seriesIndex < snapshot.Result.Series.Count; seriesIndex++)
             {
                 var series = snapshot.Result.Series[seriesIndex];
-                if (!string.Equals(series.Name, marker.SeriesName, StringComparison.OrdinalIgnoreCase) || dataIndex >= series.Values.Count)
+                if (
+                    !string.Equals(
+                        series.Name,
+                        marker.SeriesName,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    || dataIndex >= series.Values.Count
+                )
                 {
                     continue;
                 }
@@ -1233,14 +1597,24 @@ internal sealed class TradingChartRenderer : IDisposable
                     return null;
                 }
 
-                return new CrosshairTarget(panel, GetY(panel.BodyBounds, range, value.Value), value.Value);
+                return new CrosshairTarget(
+                    panel,
+                    GetY(panel.BodyBounds, range, value.Value),
+                    value.Value
+                );
             }
         }
 
         for (var snapshotIndex = 0; snapshotIndex < model.MainIndicators.Count; snapshotIndex++)
         {
             var snapshot = model.MainIndicators[snapshotIndex];
-            if (!string.Equals(snapshot.Indicator.Id, marker.IndicatorId, StringComparison.OrdinalIgnoreCase))
+            if (
+                !string.Equals(
+                    snapshot.Indicator.Id,
+                    marker.IndicatorId,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
                 continue;
             }
@@ -1248,7 +1622,14 @@ internal sealed class TradingChartRenderer : IDisposable
             for (var seriesIndex = 0; seriesIndex < snapshot.Result.Series.Count; seriesIndex++)
             {
                 var series = snapshot.Result.Series[seriesIndex];
-                if (!string.Equals(series.Name, marker.SeriesName, StringComparison.OrdinalIgnoreCase) || dataIndex >= series.Values.Count)
+                if (
+                    !string.Equals(
+                        series.Name,
+                        marker.SeriesName,
+                        StringComparison.OrdinalIgnoreCase
+                    )
+                    || dataIndex >= series.Values.Count
+                )
                 {
                     continue;
                 }
@@ -1259,14 +1640,23 @@ internal sealed class TradingChartRenderer : IDisposable
                     return null;
                 }
 
-                return new CrosshairTarget(layout.Panels[0], GetY(layout.Panels[0].BodyBounds, mainRange, value.Value), value.Value);
+                return new CrosshairTarget(
+                    layout.Panels[0],
+                    GetY(layout.Panels[0].BodyBounds, mainRange, value.Value),
+                    value.Value
+                );
             }
         }
 
         return null;
     }
 
-    private static int FindIndexByTime(IReadOnlyList<CandlePoint> data, DateTimeOffset time, int visibleStart, int visibleEnd)
+    private static int FindIndexByTime(
+        IReadOnlyList<CandlePoint> data,
+        DateTimeOffset time,
+        int visibleStart,
+        int visibleEnd
+    )
     {
         for (var i = visibleStart; i <= visibleEnd; i++)
         {
@@ -1279,7 +1669,13 @@ internal sealed class TradingChartRenderer : IDisposable
         return -1;
     }
 
-    private void DrawMarkerShape(SKCanvas canvas, TradingMarkerShape shape, float x, float y, float size)
+    private void DrawMarkerShape(
+        SKCanvas canvas,
+        TradingMarkerShape shape,
+        float x,
+        float y,
+        float size
+    )
     {
         _markerPath.Rewind();
         switch (shape)
@@ -1338,7 +1734,8 @@ internal sealed class TradingChartRenderer : IDisposable
         }
     }
 
-    private static SKColor ToSkColor(Avalonia.Media.Color color) => new(color.R, color.G, color.B, color.A);
+    private static SKColor ToSkColor(Avalonia.Media.Color color) =>
+        new(color.R, color.G, color.B, color.A);
 
     private static float GetX(Rect bodyBounds, int visibleStart, int visibleCount, int index)
     {
@@ -1358,13 +1755,24 @@ internal sealed class TradingChartRenderer : IDisposable
         return range.Min + (normalized * range.Span);
     }
 
-    private static bool IsSeriesHovered(TradingChartRenderModel model, ITradingIndicator indicator, string seriesName)
+    private static bool IsSeriesHovered(
+        TradingChartRenderModel model,
+        ITradingIndicator indicator,
+        string seriesName
+    )
     {
-        return ReferenceEquals(model.HoveredIndicator, indicator) &&
-            string.Equals(model.HoveredSeriesName, seriesName, StringComparison.Ordinal);
+        return ReferenceEquals(model.HoveredIndicator, indicator)
+            && string.Equals(model.HoveredSeriesName, seriesName, StringComparison.Ordinal);
     }
 
-    private static float DistanceToSegment(float px, float py, float x1, float y1, float x2, float y2)
+    private static float DistanceToSegment(
+        float px,
+        float py,
+        float x1,
+        float y1,
+        float x2,
+        float y2
+    )
     {
         var dx = x2 - x1;
         var dy = y2 - y1;
@@ -1380,7 +1788,15 @@ internal sealed class TradingChartRenderer : IDisposable
         return MathF.Sqrt(((px - cx) * (px - cx)) + ((py - cy) * (py - cy)));
     }
 
-    private static bool HitTestSeriesLine(Point point, Rect bodyBounds, TradingValueRange range, TradingIndicatorSeries series, int visibleStart, int visibleEnd, float tolerance)
+    private static bool HitTestSeriesLine(
+        Point point,
+        Rect bodyBounds,
+        TradingValueRange range,
+        TradingIndicatorSeries series,
+        int visibleStart,
+        int visibleEnd,
+        float tolerance
+    )
     {
         if (!bodyBounds.Contains(point))
         {
@@ -1399,10 +1815,20 @@ internal sealed class TradingChartRenderer : IDisposable
 
             var current = new SKPoint(
                 GetX(bodyBounds, visibleStart, visibleEnd - visibleStart + 1, index),
-                GetY(bodyBounds, range, value.Value));
+                GetY(bodyBounds, range, value.Value)
+            );
 
-            if (previous.HasValue &&
-                DistanceToSegment((float)point.X, (float)point.Y, previous.Value.X, previous.Value.Y, current.X, current.Y) <= tolerance)
+            if (
+                previous.HasValue
+                && DistanceToSegment(
+                    (float)point.X,
+                    (float)point.Y,
+                    previous.Value.X,
+                    previous.Value.Y,
+                    current.X,
+                    current.Y
+                ) <= tolerance
+            )
             {
                 return true;
             }
@@ -1425,15 +1851,30 @@ internal sealed class TradingChartRenderer : IDisposable
         TradingLegendAction Action,
         bool IsHidden,
         SKRect Bounds,
-        IReadOnlyList<LegendSegment> Segments);
+        IReadOnlyList<LegendSegment> Segments
+    );
 
-    private readonly record struct CrosshairTarget(TradingChartPanelLayout Panel, float Y, double Value);
+    private readonly record struct CrosshairTarget(
+        TradingChartPanelLayout Panel,
+        float Y,
+        double Value
+    );
 
-    private readonly record struct LatestValueTag(double Value, string Text, SKColor Color, bool IsHovered);
+    private readonly record struct LatestValueTag(
+        double Value,
+        string Text,
+        SKColor Color,
+        bool IsHovered
+    );
 
     private readonly record struct LatestValueTagPlacement(LatestValueTag Tag, float Y);
 
-    private readonly record struct TradingValueRange(double Min, double Max, double Step, IReadOnlyList<double> Ticks)
+    private readonly record struct TradingValueRange(
+        double Min,
+        double Max,
+        double Step,
+        IReadOnlyList<double> Ticks
+    )
     {
         public double Span => Max - Min;
 
@@ -1485,7 +1926,10 @@ internal sealed class TradingChartRenderer : IDisposable
                 var niceMax = Math.Ceiling(max / step) * step;
                 var tickCount = (int)Math.Round((niceMax - niceMin) / step) + 1;
                 var rangePenalty = tickCount <= safeTickCount ? 0d : 200d;
-                var score = rangePenalty + (Math.Abs(tickCount - Math.Min(safeTickCount, 6)) * 10d) + Math.Abs(step - rawStep);
+                var score =
+                    rangePenalty
+                    + (Math.Abs(tickCount - Math.Min(safeTickCount, 6)) * 10d)
+                    + Math.Abs(step - rawStep);
                 if (score < bestScore)
                 {
                     bestScore = score;

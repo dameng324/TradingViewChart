@@ -22,7 +22,7 @@ public sealed class TradingViewChartLoadTests
         {
             Width = 960,
             Height = 540,
-            CandleSource = CreateSampleData(240)
+            CandleSource = CreateSampleData(240),
         };
 
         chart.Indicators.Add(new MaIndicator(5, 10, 20));
@@ -34,7 +34,7 @@ public sealed class TradingViewChartLoadTests
         {
             Width = 960,
             Height = 540,
-            Content = chart
+            Content = chart,
         };
 
         await Assert.That(window.Content).IsNotNull();
@@ -55,17 +55,19 @@ public sealed class TradingViewChartLoadTests
             var high = Math.Max(open, close) + 1.2d;
             var low = Math.Min(open, close) - 1.1d;
             var previousClose = i == 0 ? open : list[i - 1].Close;
-            list.Add(new CandlePoint
-            {
-                Time = new DateTimeOffset(2025, 1, 1, 9, 30, 0, TimeSpan.Zero).AddMinutes(i),
-                Open = open,
-                High = high,
-                Low = low,
-                Close = close,
-                Volume = 800_000 + (i * 5_000),
-                Turnover = (800_000 + (i * 5_000)) * close,
-                PreviousClose = previousClose
-            });
+            list.Add(
+                new CandlePoint
+                {
+                    Time = new DateTimeOffset(2025, 1, 1, 9, 30, 0, TimeSpan.Zero).AddMinutes(i),
+                    Open = open,
+                    High = high,
+                    Low = low,
+                    Close = close,
+                    Volume = 800_000 + (i * 5_000),
+                    Turnover = (800_000 + (i * 5_000)) * close,
+                    PreviousClose = previousClose,
+                }
+            );
 
             price = close + Math.Cos(i / 11d) * 0.5d;
         }

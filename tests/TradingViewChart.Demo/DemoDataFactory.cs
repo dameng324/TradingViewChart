@@ -22,19 +22,21 @@ internal static class DemoDataFactory
             var previousClose = i == 0 ? open : list[i - 1].Close;
             var isRising = close >= open;
 
-            list.Add(new CandlePoint
-            {
-                Time = time.AddDays(i),
-                Open = open,
-                High = high,
-                Low = low,
-                Close = close,
-                Volume = volume,
-                Turnover = volume * close,
-                PreviousClose = previousClose,
-                IsLimitUp = i % 97 == 0 && i > 0 && isRising,
-                IsLimitDown = i % 131 == 0 && i > 0 && !isRising
-            });
+            list.Add(
+                new CandlePoint
+                {
+                    Time = time.AddDays(i),
+                    Open = open,
+                    High = high,
+                    Low = low,
+                    Close = close,
+                    Volume = volume,
+                    Turnover = volume * close,
+                    PreviousClose = previousClose,
+                    IsLimitUp = i % 97 == 0 && i > 0 && isRising,
+                    IsLimitDown = i % 131 == 0 && i > 0 && !isRising,
+                }
+            );
 
             price = close + (Math.Sin(i / 17d) * 0.4d);
         }
@@ -51,11 +53,7 @@ internal static class DemoDataFactory
         for (var i = 0; i < count; i++)
         {
             price += Math.Sin(i / 10d) * 0.7d + Math.Cos(i / 16d) * 0.45d + 0.08d;
-            list.Add(new PricePoint
-            {
-                Time = time.AddMinutes(i * 5),
-                Price = price
-            });
+            list.Add(new PricePoint { Time = time.AddMinutes(i * 5), Price = price });
         }
 
         return list;
@@ -75,14 +73,14 @@ internal static class DemoDataFactory
                 Time = data[Math.Min(32, data.Count - 1)].Time,
                 Shape = TradingMarkerShape.UpArrow,
                 Placement = TradingMarkerPlacement.Below,
-                Note = "Buy"
+                Note = "Buy",
             },
             new TradingMarker
             {
                 Time = data[Math.Min(87, data.Count - 1)].Time,
                 Shape = TradingMarkerShape.Star,
                 Placement = TradingMarkerPlacement.Above,
-                Note = "Breakout"
+                Note = "Breakout",
             },
             new TradingMarker
             {
@@ -91,8 +89,8 @@ internal static class DemoDataFactory
                 SeriesName = "DEA",
                 Shape = TradingMarkerShape.Circle,
                 Placement = TradingMarkerPlacement.Above,
-                Note = "DEA"
-            }
+                Note = "DEA",
+            },
         ];
     }
 
@@ -110,15 +108,15 @@ internal static class DemoDataFactory
                 Time = data[Math.Min(40, data.Count - 1)].Time,
                 Shape = TradingMarkerShape.Circle,
                 Placement = TradingMarkerPlacement.Above,
-                Note = "Pivot"
+                Note = "Pivot",
             },
             new TradingMarker
             {
                 Time = data[Math.Min(120, data.Count - 1)].Time,
                 Shape = TradingMarkerShape.Triangle,
                 Placement = TradingMarkerPlacement.Below,
-                Note = "Pullback"
-            }
+                Note = "Pullback",
+            },
         ];
     }
 
@@ -132,7 +130,10 @@ internal static class DemoDataFactory
         var close = open + drift;
         var high = Math.Max(open, close) + 1.0d + (Math.Abs(Math.Sin(nextIndex / 7d)) * 0.45d);
         var low = Math.Min(open, close) - 0.9d - (Math.Abs(Math.Cos(nextIndex / 6d)) * 0.35d);
-        var volume = Math.Max(1000d, last.Volume * (0.94d + (Math.Abs(Math.Sin(nextIndex / 11d)) * 0.22d)));
+        var volume = Math.Max(
+            1000d,
+            last.Volume * (0.94d + (Math.Abs(Math.Sin(nextIndex / 11d)) * 0.22d))
+        );
         var isRising = close >= open;
 
         return new CandlePoint
@@ -146,7 +147,7 @@ internal static class DemoDataFactory
             Turnover = volume * close,
             PreviousClose = last.Close,
             IsLimitUp = nextIndex % 97 == 0 && isRising,
-            IsLimitDown = nextIndex % 131 == 0 && !isRising
+            IsLimitDown = nextIndex % 131 == 0 && !isRising,
         };
     }
 
@@ -157,7 +158,11 @@ internal static class DemoDataFactory
         return new PricePoint
         {
             Time = last.Time.AddMinutes(5),
-            Price = last.Price + (Math.Sin(nextIndex / 8d) * 0.85d) + (Math.Cos(nextIndex / 13d) * 0.35d) + 0.04d
+            Price =
+                last.Price
+                + (Math.Sin(nextIndex / 8d) * 0.85d)
+                + (Math.Cos(nextIndex / 13d) * 0.35d)
+                + 0.04d,
         };
     }
 

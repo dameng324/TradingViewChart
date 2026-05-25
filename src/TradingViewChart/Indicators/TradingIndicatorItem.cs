@@ -18,7 +18,11 @@ public sealed class TradingIndicatorItem : INotifyPropertyChanged
     {
         Template = template ?? throw new ArgumentNullException(nameof(template));
         _parameters = new ObservableCollection<TradingIndicatorParameterValue>(
-            template.Parameters.Select(parameter => new TradingIndicatorParameterValue(parameter, parameter.DefaultValue)));
+            template.Parameters.Select(parameter => new TradingIndicatorParameterValue(
+                parameter,
+                parameter.DefaultValue
+            ))
+        );
         _parameters.CollectionChanged += OnParametersCollectionChanged;
         SubscribeParameters(_parameters);
     }
@@ -58,7 +62,8 @@ public sealed class TradingIndicatorItem : INotifyPropertyChanged
     {
         if (Template is null)
         {
-            return _explicitIndicator ?? throw new InvalidOperationException("Indicator is unavailable.");
+            return _explicitIndicator
+                ?? throw new InvalidOperationException("Indicator is unavailable.");
         }
 
         var values = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
@@ -79,10 +84,7 @@ public sealed class TradingIndicatorItem : INotifyPropertyChanged
             return clone;
         }
 
-        var item = new TradingIndicatorItem(Template)
-        {
-            IsHidden = IsHidden
-        };
+        var item = new TradingIndicatorItem(Template) { IsHidden = IsHidden };
 
         item._parameters.Clear();
         for (var i = 0; i < _parameters.Count; i++)
@@ -98,7 +100,9 @@ public sealed class TradingIndicatorItem : INotifyPropertyChanged
         ArgumentNullException.ThrowIfNull(source);
         if (!string.Equals(Id, source.Id, StringComparison.Ordinal))
         {
-            throw new InvalidOperationException("Cannot copy parameters from a different indicator type.");
+            throw new InvalidOperationException(
+                "Cannot copy parameters from a different indicator type."
+            );
         }
 
         IsHidden = source.IsHidden;
@@ -142,7 +146,13 @@ public sealed class TradingIndicatorItem : INotifyPropertyChanged
 
     private void OnParameterPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
-        if (string.Equals(e.PropertyName, nameof(TradingIndicatorParameterValue.Value), StringComparison.Ordinal))
+        if (
+            string.Equals(
+                e.PropertyName,
+                nameof(TradingIndicatorParameterValue.Value),
+                StringComparison.Ordinal
+            )
+        )
         {
             Touch();
             OnPropertyChanged(nameof(DisplayName));

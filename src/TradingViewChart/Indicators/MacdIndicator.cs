@@ -56,8 +56,12 @@ public sealed class MacdIndicator : ITradingIndicator
         for (var index = 0; index < data.Count; index++)
         {
             var close = data[index].Close;
-            shortEma = shortEma.HasValue ? ((close - shortEma.Value) * shortMultiplier) + shortEma.Value : close;
-            longEma = longEma.HasValue ? ((close - longEma.Value) * longMultiplier) + longEma.Value : close;
+            shortEma = shortEma.HasValue
+                ? ((close - shortEma.Value) * shortMultiplier) + shortEma.Value
+                : close;
+            longEma = longEma.HasValue
+                ? ((close - longEma.Value) * longMultiplier) + longEma.Value
+                : close;
 
             var diff = shortEma.Value - longEma.Value;
             dea = dea.HasValue ? ((diff - dea.Value) * signalMultiplier) + dea.Value : diff;
@@ -68,11 +72,16 @@ public sealed class MacdIndicator : ITradingIndicator
             histogramValues[index] = histogram;
         }
 
-        return new TradingIndicatorResult(
-        [
+        return new TradingIndicatorResult([
             new TradingIndicatorSeries("DIFF", diffValues, Color.Parse("#F59E0B")),
             new TradingIndicatorSeries("DEA", deaValues, Color.Parse("#60A5FA")),
-            new TradingIndicatorSeries("MACD", histogramValues, Color.Parse("#9CA3AF"), IndicatorRenderStyle.Histogram, 4d)
+            new TradingIndicatorSeries(
+                "MACD",
+                histogramValues,
+                Color.Parse("#9CA3AF"),
+                IndicatorRenderStyle.Histogram,
+                4d
+            ),
         ]);
     }
 
@@ -82,7 +91,8 @@ public sealed class MacdIndicator : ITradingIndicator
 
         foreach (var series in result.Series)
         {
-            var value = dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
+            var value =
+                dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
             parts.Add(value.HasValue ? $"{series.Name}: {value.Value:F3}" : $"{series.Name}: --");
         }
 

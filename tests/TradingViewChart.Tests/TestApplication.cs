@@ -8,11 +8,9 @@ public sealed class TestApplication : Application
 {
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<TestApplication>()
+        return AppBuilder
+            .Configure<TestApplication>()
             .UseSkia()
-            .UseHeadless(new AvaloniaHeadlessPlatformOptions
-            {
-                UseHeadlessDrawing = true
-            });
+            .UseHeadless(new AvaloniaHeadlessPlatformOptions { UseHeadlessDrawing = true });
     }
 }

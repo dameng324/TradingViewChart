@@ -9,7 +9,10 @@ public sealed class TradingIndicatorParameterValue : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public TradingIndicatorParameterValue(TradingIndicatorParameterDefinition definition, object? value)
+    public TradingIndicatorParameterValue(
+        TradingIndicatorParameterDefinition definition,
+        object? value
+    )
     {
         Definition = definition ?? throw new ArgumentNullException(nameof(definition));
         _value = value;

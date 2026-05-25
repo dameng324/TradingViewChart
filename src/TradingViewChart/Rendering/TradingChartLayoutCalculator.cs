@@ -20,7 +20,10 @@ internal static class TradingChartLayoutCalculator
         var normalizedWeights = NormalizeWeights(panelWeights);
         var panelCount = normalizedWeights.Count;
         var splitterCount = panelCount > 1 ? 1 : 0;
-        var availablePanelHeight = Math.Max(MinPanelHeight, panelAreaHeight - (splitterCount * SplitterHeight));
+        var availablePanelHeight = Math.Max(
+            MinPanelHeight,
+            panelAreaHeight - (splitterCount * SplitterHeight)
+        );
         var heights = CalculatePanelHeights(normalizedWeights, availablePanelHeight);
 
         var panels = new List<TradingChartPanelLayout>(panelCount);
@@ -33,22 +36,35 @@ internal static class TradingChartLayoutCalculator
             var bounds = new Rect(OuterPadding, currentTop, plotWidth, panelHeight);
             var bodyTop = bounds.Y + HeaderHeight;
             var bodyHeight = Math.Max(8d, bounds.Height - HeaderHeight);
-            panels.Add(new TradingChartPanelLayout(
-                panelIndex,
-                bounds,
-                new Rect(bounds.X, bodyTop, bounds.Width, bodyHeight),
-                new Rect(bounds.Right, bounds.Y, YAxisWidth, bounds.Height)));
+            panels.Add(
+                new TradingChartPanelLayout(
+                    panelIndex,
+                    bounds,
+                    new Rect(bounds.X, bodyTop, bounds.Width, bodyHeight),
+                    new Rect(bounds.Right, bounds.Y, YAxisWidth, bounds.Height)
+                )
+            );
 
             currentTop += panelHeight;
             if (panelIndex == 0 && splitterCount > 0)
             {
-                var splitterBounds = new Rect(OuterPadding, currentTop, plotWidth + YAxisWidth, SplitterHeight);
+                var splitterBounds = new Rect(
+                    OuterPadding,
+                    currentTop,
+                    plotWidth + YAxisWidth,
+                    SplitterHeight
+                );
                 splitters.Add(new TradingChartSplitterLayout(0, splitterBounds, 0, 1));
                 currentTop += SplitterHeight;
             }
         }
 
-        var xAxisBounds = new Rect(OuterPadding, OuterPadding + panelAreaHeight, plotWidth, XAxisHeight);
+        var xAxisBounds = new Rect(
+            OuterPadding,
+            OuterPadding + panelAreaHeight,
+            plotWidth,
+            XAxisHeight
+        );
         return new TradingChartLayout(
             new Rect(0d, 0d, width, height),
             panels,
@@ -57,7 +73,8 @@ internal static class TradingChartLayoutCalculator
             YAxisWidth,
             HeaderHeight,
             OuterPadding,
-            SplitterHeight);
+            SplitterHeight
+        );
     }
 
     private static IReadOnlyList<double> NormalizeWeights(IReadOnlyList<double> panelWeights)
@@ -76,7 +93,10 @@ internal static class TradingChartLayoutCalculator
         return normalized;
     }
 
-    private static double[] CalculatePanelHeights(IReadOnlyList<double> weights, double availablePanelHeight)
+    private static double[] CalculatePanelHeights(
+        IReadOnlyList<double> weights,
+        double availablePanelHeight
+    )
     {
         if (weights.Count == 1)
         {
@@ -96,11 +116,17 @@ internal static class TradingChartLayoutCalculator
         }
 
         var subCount = weights.Count - 1;
-        var maxMainHeight = Math.Max(MinPanelHeight, availablePanelHeight - (subCount * MinPanelHeight));
+        var maxMainHeight = Math.Max(
+            MinPanelHeight,
+            availablePanelHeight - (subCount * MinPanelHeight)
+        );
         var minMainHeight = Math.Min(availablePanelHeight * 0.5d, maxMainHeight);
         heights[0] = Math.Clamp(heights[0], minMainHeight, maxMainHeight);
 
-        var remainingHeight = Math.Max(availablePanelHeight - heights[0], MinPanelHeight * subCount);
+        var remainingHeight = Math.Max(
+            availablePanelHeight - heights[0],
+            MinPanelHeight * subCount
+        );
         var equalHeight = remainingHeight / subCount;
         for (var i = 1; i < heights.Length; i++)
         {
@@ -155,7 +181,8 @@ internal sealed class TradingChartLayout
         double yAxisWidth,
         double headerHeight,
         double outerPadding,
-        double splitterHeight)
+        double splitterHeight
+    )
     {
         ControlBounds = controlBounds;
         Panels = panels;
@@ -184,6 +211,16 @@ internal sealed class TradingChartLayout
     public double SplitterHeight { get; }
 }
 
-internal readonly record struct TradingChartPanelLayout(int Index, Rect Bounds, Rect BodyBounds, Rect AxisBounds);
+internal readonly record struct TradingChartPanelLayout(
+    int Index,
+    Rect Bounds,
+    Rect BodyBounds,
+    Rect AxisBounds
+);
 
-internal readonly record struct TradingChartSplitterLayout(int Index, Rect Bounds, int UpperPanelIndex, int LowerPanelIndex);
+internal readonly record struct TradingChartSplitterLayout(
+    int Index,
+    Rect Bounds,
+    int UpperPanelIndex,
+    int LowerPanelIndex
+);

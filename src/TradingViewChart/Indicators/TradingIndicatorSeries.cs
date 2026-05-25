@@ -10,7 +10,8 @@ public sealed class TradingIndicatorSeries
         Color stroke,
         IndicatorRenderStyle renderStyle = IndicatorRenderStyle.Line,
         double thickness = 1.5d,
-        bool usePriceDirectionColors = false)
+        bool usePriceDirectionColors = false
+    )
     {
         Name = name;
         Values = values;

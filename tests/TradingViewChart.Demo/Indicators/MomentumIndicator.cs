@@ -36,18 +36,18 @@ internal sealed class MomentumIndicator : ITradingIndicator
             values[i] = data[i].Close - data[i - _period].Close;
         }
 
-        return new TradingIndicatorResult(
-        [
+        return new TradingIndicatorResult([
             new TradingIndicatorSeries("MOM", values, Color.Parse("#F59E0B")),
-            new TradingIndicatorSeries("Zero", zeroLine, Color.Parse("#94A3B8"), thickness: 1d)
+            new TradingIndicatorSeries("Zero", zeroLine, Color.Parse("#94A3B8"), thickness: 1d),
         ]);
     }
 
     public string GetLegendText(int dataIndex, TradingIndicatorResult result)
     {
-        var value = dataIndex >= 0 && dataIndex < result.Series[0].Values.Count
-            ? result.Series[0].Values[dataIndex]
-            : null;
+        var value =
+            dataIndex >= 0 && dataIndex < result.Series[0].Values.Count
+                ? result.Series[0].Values[dataIndex]
+                : null;
         return value.HasValue ? $"{DisplayName}: {value.Value:F2}" : $"{DisplayName}: --";
     }
 }

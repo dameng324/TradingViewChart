@@ -12,11 +12,14 @@ public sealed class DemoTradingViewChart : global::TradingViewChart.TradingViewC
         var beginAllocated = GC.GetAllocatedBytesForCurrentThread();
         var beginTimeStamp = Stopwatch.GetTimestamp();
         base.Render(context);
-        FrameRendered?.Invoke(this, new RenderEventArgs
-        {
-            FrameTime = Stopwatch.GetElapsedTime(beginTimeStamp),
-            AllocatedBytes = GC.GetAllocatedBytesForCurrentThread() - beginAllocated
-        });
+        FrameRendered?.Invoke(
+            this,
+            new RenderEventArgs
+            {
+                FrameTime = Stopwatch.GetElapsedTime(beginTimeStamp),
+                AllocatedBytes = GC.GetAllocatedBytesForCurrentThread() - beginAllocated,
+            }
+        );
     }
 }
 
@@ -33,5 +36,5 @@ public struct RenderEventArgs
  * 4. 图表需要可以绑定当前的缩放比例（TwoWay），以便修改缩放比例，之前是只能通过鼠标滚轮来实现缩放。
  * 5. demo项目创建一个单独的ViewModel来班定MainWindow的DataContext，ViewModel中需要包含所有TradingViewChart可班定的属性，并在界面中展示，以展示图表的所有支持的功能。
  * 6. 图表的渲染目前会有一些堆上的内存分配，请你使用SharedArrayPool/statckalloc/structs等方式来优化多次渲染时的内存分配，尽量做到每次渲染0堆内存分配。
- * 
+ *
  */

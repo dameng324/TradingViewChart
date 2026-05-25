@@ -50,23 +50,13 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public ChartDemoViewModel PriceChart { get; }
 
     public IReadOnlyList<CrosshairHintMode> CrosshairModes { get; } =
-    [
-        CrosshairHintMode.FixedCorner,
-        CrosshairHintMode.FollowMouse
-    ];
+    [CrosshairHintMode.FixedCorner, CrosshairHintMode.FollowMouse];
 
     public IReadOnlyList<CrosshairValueMode> CrosshairValueModes { get; } =
-    [
-        CrosshairValueMode.SnapToData,
-        CrosshairValueMode.FollowPointer
-    ];
+    [CrosshairValueMode.SnapToData, CrosshairValueMode.FollowPointer];
 
     public IReadOnlyList<string> XAxisFormats { get; } =
-    [
-        "yyyy-MM-dd",
-        "MM-dd",
-        "yyyy-MM-dd HH:mm"
-    ];
+    ["yyyy-MM-dd", "MM-dd", "yyyy-MM-dd HH:mm"];
 
     public int SelectedDemoIndex
     {
@@ -120,13 +110,16 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    public string CurrentHoveredTimeText => CurrentChart.HoveredTime.HasValue
-        ? $"Hover: {CurrentChart.HoveredTime.Value:yyyy-MM-dd HH:mm:ss}"
-        : "Hover: --";
+    public string CurrentHoveredTimeText =>
+        CurrentChart.HoveredTime.HasValue
+            ? $"Hover: {CurrentChart.HoveredTime.Value:yyyy-MM-dd HH:mm:ss}"
+            : "Hover: --";
 
-    public string CurrentViewportText => $"Range: {FormatTime(CurrentChart.VisibleStartTime)} -> {FormatTime(CurrentChart.VisibleEndTime)}";
+    public string CurrentViewportText =>
+        $"Range: {FormatTime(CurrentChart.VisibleStartTime)} -> {FormatTime(CurrentChart.VisibleEndTime)}";
 
-    public string CurrentIndicatorText => $"Indicators: {string.Join(", ", CurrentChart.IndicatorItems.Select(item => $"{item.DisplayName}{(item.IsHidden ? " (hidden)" : string.Empty)}"))}";
+    public string CurrentIndicatorText =>
+        $"Indicators: {string.Join(", ", CurrentChart.IndicatorItems.Select(item => $"{item.DisplayName}{(item.IsHidden ? " (hidden)" : string.Empty)}"))}";
 
     public string StatusText
     {
@@ -154,7 +147,9 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
 
     public void OnFrameRendered(RenderEventArgs e)
     {
-        FrameText = $"Frame: {e.FrameTime.TotalMilliseconds:F1} ms | Alloc: {e.AllocatedBytes / 1024d:F1} KB";
+        FrameText =
+            $"{DateTime.Now:HH:mm:ss.fff} Frame: {e.FrameTime.TotalMilliseconds:F3} ms | Alloc: {e.AllocatedBytes / 1024d:F3} KB";
+        Console.WriteLine(FrameText);
     }
 
     private void ToggleMarkers()
@@ -229,7 +224,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         }
     }
 
-    private static string FormatTime(DateTimeOffset? time) => time?.ToString("yyyy-MM-dd HH:mm:ss") ?? "--";
+    private static string FormatTime(DateTimeOffset? time) =>
+        time?.ToString("yyyy-MM-dd HH:mm:ss") ?? "--";
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
@@ -259,6 +255,7 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
     private CrosshairHintMode _crosshairHintMode;
     private CrosshairValueMode _crosshairValueMode;
     private string _xAxisLabelFormat = "yyyy-MM-dd";
+    private string _chartTitle = "PRICE";
     private string _lastPointClickText = "Point click: --";
 
     private ChartDemoViewModel()
@@ -366,13 +363,20 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
         set => SetField(ref _xAxisLabelFormat, value);
     }
 
+    public string ChartTitle
+    {
+        get => _chartTitle;
+        set => SetField(ref _chartTitle, value);
+    }
+
     public ICommand TogglePointClickCommand { get; }
 
     public object? PointClickCommandParameter { get; set; }
 
     public string HoveredTimeText => HoveredTime?.ToString("yyyy-MM-dd HH:mm:ss") ?? "--";
 
-    public string ViewportText => $"{VisibleStartTime:yyyy-MM-dd HH:mm:ss} -> {VisibleEndTime:yyyy-MM-dd HH:mm:ss}";
+    public string ViewportText =>
+        $"{VisibleStartTime:yyyy-MM-dd HH:mm:ss} -> {VisibleEndTime:yyyy-MM-dd HH:mm:ss}";
 
     public string LastPointClickText
     {
@@ -381,16 +385,16 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
     }
 
     public IReadOnlyList<DateTimeOffset> AvailableTimes =>
-        CandleSource is not null
-            ? CandleSource.Select(point => point.Time).ToList()
-            : PriceSource is not null
-                ? PriceSource.Select(point => point.Time).ToList()
-                : Array.Empty<DateTimeOffset>();
+        CandleSource is not null ? CandleSource.Select(point => point.Time).ToList()
+        : PriceSource is not null ? PriceSource.Select(point => point.Time).ToList()
+        : Array.Empty<DateTimeOffset>();
 
     public static ChartDemoViewModel CreateCandles()
     {
         var candleData = new ObservableCollection<CandlePoint>(DemoDataFactory.CreateCandles(360));
-        var markers = new ObservableCollection<TradingMarker>(DemoDataFactory.CreateCandleMarkers(candleData));
+        var markers = new ObservableCollection<TradingMarker>(
+            DemoDataFactory.CreateCandleMarkers(candleData)
+        );
         var viewModel = new ChartDemoViewModel
         {
             CandleSource = candleData,
@@ -398,13 +402,16 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
             Markers = markers,
             ZoomRatio = 3d,
             CrosshairHintMode = CrosshairHintMode.FixedCorner,
-            CrosshairValueMode = CrosshairValueMode.SnapToData
+            CrosshairValueMode = CrosshairValueMode.SnapToData,
+            ChartTitle = "PRICE",
         };
 
         viewModel.SupportedIndicators.Add(TradingIndicatorTemplates.MovingAverage);
         viewModel.SupportedIndicators.Add(TradingIndicatorTemplates.Macd);
         viewModel.SupportedIndicators.Add(TradingIndicatorTemplates.Volume);
-        viewModel.IndicatorItems.Add(new TradingIndicatorItem(TradingIndicatorTemplates.MovingAverage));
+        viewModel.IndicatorItems.Add(
+            new TradingIndicatorItem(TradingIndicatorTemplates.MovingAverage)
+        );
         viewModel.IndicatorItems[0].Parameters[0].Value = "5,10,20,60";
         viewModel.IndicatorItems.Add(new TradingIndicatorItem(TradingIndicatorTemplates.Macd));
         viewModel.RefreshComputedProperties();
@@ -414,7 +421,9 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
     public static ChartDemoViewModel CreatePrices()
     {
         var priceData = new ObservableCollection<PricePoint>(DemoDataFactory.CreatePrices(360));
-        var markers = new ObservableCollection<TradingMarker>(DemoDataFactory.CreatePriceMarkers(priceData));
+        var markers = new ObservableCollection<TradingMarker>(
+            DemoDataFactory.CreatePriceMarkers(priceData)
+        );
         var viewModel = new ChartDemoViewModel
         {
             PriceSource = priceData,
@@ -422,7 +431,8 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
             Markers = markers,
             ZoomRatio = 3d,
             CrosshairHintMode = CrosshairHintMode.FixedCorner,
-            CrosshairValueMode = CrosshairValueMode.SnapToData
+            CrosshairValueMode = CrosshairValueMode.SnapToData,
+            ChartTitle = "LINE",
         };
 
         viewModel.SupportedIndicators.Add(TradingIndicatorTemplates.MovingAverage);
@@ -581,7 +591,10 @@ public sealed class ChartDemoViewModel : INotifyPropertyChanged
         OnPropertyChanged(nameof(IndicatorItems));
     }
 
-    private static void RemoveMarkersByTime(ObservableCollection<TradingMarker> markers, DateTimeOffset time)
+    private static void RemoveMarkersByTime(
+        ObservableCollection<TradingMarker> markers,
+        DateTimeOffset time
+    )
     {
         for (var i = markers.Count - 1; i >= 0; i--)
         {

@@ -18,14 +18,16 @@ public sealed partial class MainWindow : Window
 
     private void OnToggleThemeClick(object? sender, RoutedEventArgs e)
     {
-        RequestedThemeVariant = RequestedThemeVariant == ThemeVariant.Dark
-            ? ThemeVariant.Light
-            : ThemeVariant.Dark;
+        RequestedThemeVariant =
+            RequestedThemeVariant == ThemeVariant.Dark ? ThemeVariant.Light : ThemeVariant.Dark;
 
-        Dispatcher.UIThread.Post(() =>
-        {
-            CandleChart.InvalidateVisual();
-            PriceChart.InvalidateVisual();
-        }, DispatcherPriority.Render);
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                CandleChart.InvalidateVisual();
+                PriceChart.InvalidateVisual();
+            },
+            DispatcherPriority.Render
+        );
     }
 }

@@ -23,22 +23,32 @@ public class TradingViewChart : Control
     private static readonly Cursor VerticalResizeCursor = new(StandardCursorType.SizeNorthSouth);
 
     public static readonly StyledProperty<IReadOnlyList<CandlePoint>?> CandleSourceProperty =
-        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<CandlePoint>?>(nameof(CandleSource));
+        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<CandlePoint>?>(
+            nameof(CandleSource)
+        );
 
     public static readonly StyledProperty<IReadOnlyList<PricePoint>?> PriceSourceProperty =
-        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<PricePoint>?>(nameof(PriceSource));
+        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<PricePoint>?>(
+            nameof(PriceSource)
+        );
 
     public static readonly StyledProperty<IReadOnlyList<TradingMarker>?> MarkersProperty =
         AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<TradingMarker>?>(nameof(Markers));
 
-    public static readonly StyledProperty<IBrush?> UpBrushProperty =
-        AvaloniaProperty.Register<TradingViewChart, IBrush?>(nameof(UpBrush));
+    public static readonly StyledProperty<IBrush?> UpBrushProperty = AvaloniaProperty.Register<
+        TradingViewChart,
+        IBrush?
+    >(nameof(UpBrush));
 
-    public static readonly StyledProperty<IBrush?> DownBrushProperty =
-        AvaloniaProperty.Register<TradingViewChart, IBrush?>(nameof(DownBrush));
+    public static readonly StyledProperty<IBrush?> DownBrushProperty = AvaloniaProperty.Register<
+        TradingViewChart,
+        IBrush?
+    >(nameof(DownBrush));
 
-    public static readonly StyledProperty<IBrush?> LimitUpBrushProperty =
-        AvaloniaProperty.Register<TradingViewChart, IBrush?>(nameof(LimitUpBrush));
+    public static readonly StyledProperty<IBrush?> LimitUpBrushProperty = AvaloniaProperty.Register<
+        TradingViewChart,
+        IBrush?
+    >(nameof(LimitUpBrush));
 
     public static readonly StyledProperty<IBrush?> LimitDownBrushProperty =
         AvaloniaProperty.Register<TradingViewChart, IBrush?>(nameof(LimitDownBrush));
@@ -59,44 +69,61 @@ public class TradingViewChart : Control
         AvaloniaProperty.Register<TradingViewChart, IBrush?>(nameof(TooltipTextBrush));
 
     public static readonly StyledProperty<CrosshairHintMode> CrosshairHintModeProperty =
-        AvaloniaProperty.Register<TradingViewChart, CrosshairHintMode>(nameof(CrosshairHintMode), CrosshairHintMode.FixedCorner);
+        AvaloniaProperty.Register<TradingViewChart, CrosshairHintMode>(
+            nameof(CrosshairHintMode),
+            CrosshairHintMode.FixedCorner
+        );
 
-    public static readonly StyledProperty<CrosshairHintMode> CrosshairModeProperty = CrosshairHintModeProperty;
+    public static readonly StyledProperty<CrosshairHintMode> CrosshairModeProperty =
+        CrosshairHintModeProperty;
 
     public static readonly StyledProperty<CrosshairValueMode> CrosshairValueModeProperty =
-        AvaloniaProperty.Register<TradingViewChart, CrosshairValueMode>(nameof(CrosshairValueMode), CrosshairValueMode.SnapToData);
+        AvaloniaProperty.Register<TradingViewChart, CrosshairValueMode>(
+            nameof(CrosshairValueMode),
+            CrosshairValueMode.SnapToData
+        );
 
     public static readonly StyledProperty<string> XAxisLabelFormatProperty =
         AvaloniaProperty.Register<TradingViewChart, string>(nameof(XAxisLabelFormat), "yyyy-MM-dd");
 
+    public static readonly StyledProperty<string> ChartTitleProperty = AvaloniaProperty.Register<
+        TradingViewChart,
+        string
+    >(nameof(ChartTitle), "PRICE");
+
     public static readonly StyledProperty<DateTimeOffset?> HoveredTimeProperty =
         AvaloniaProperty.Register<TradingViewChart, DateTimeOffset?>(
             nameof(HoveredTime),
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay
+        );
 
     public static readonly StyledProperty<IList<TradingIndicatorItem>?> IndicatorItemsProperty =
         AvaloniaProperty.Register<TradingViewChart, IList<TradingIndicatorItem>?>(
             nameof(IndicatorItems),
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay
+        );
 
     public static readonly StyledProperty<IReadOnlyList<TradingIndicatorTemplate>?> SupportedIndicatorsProperty =
-        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<TradingIndicatorTemplate>?>(nameof(SupportedIndicators));
+        AvaloniaProperty.Register<TradingViewChart, IReadOnlyList<TradingIndicatorTemplate>?>(
+            nameof(SupportedIndicators)
+        );
 
     public static readonly StyledProperty<DateTimeOffset?> VisibleStartTimeProperty =
         AvaloniaProperty.Register<TradingViewChart, DateTimeOffset?>(
             nameof(VisibleStartTime),
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay
+        );
 
     public static readonly StyledProperty<DateTimeOffset?> VisibleEndTimeProperty =
         AvaloniaProperty.Register<TradingViewChart, DateTimeOffset?>(
             nameof(VisibleEndTime),
-            defaultBindingMode: BindingMode.TwoWay);
+            defaultBindingMode: BindingMode.TwoWay
+        );
 
-    public static readonly StyledProperty<double> ZoomRatioProperty =
-        AvaloniaProperty.Register<TradingViewChart, double>(
-            nameof(ZoomRatio),
-            1d,
-            defaultBindingMode: BindingMode.TwoWay);
+    public static readonly StyledProperty<double> ZoomRatioProperty = AvaloniaProperty.Register<
+        TradingViewChart,
+        double
+    >(nameof(ZoomRatio), 1d, defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<ICommand?> PointClickCommandProperty =
         AvaloniaProperty.Register<TradingViewChart, ICommand?>(nameof(PointClickCommand));
@@ -105,7 +132,9 @@ public class TradingViewChart : Control
         AvaloniaProperty.Register<TradingViewChart, object?>(nameof(PointClickCommandParameter));
 
     public static readonly StyledProperty<ITradingChartIndicatorEditor?> IndicatorEditorProperty =
-        AvaloniaProperty.Register<TradingViewChart, ITradingChartIndicatorEditor?>(nameof(IndicatorEditor));
+        AvaloniaProperty.Register<TradingViewChart, ITradingChartIndicatorEditor?>(
+            nameof(IndicatorEditor)
+        );
 
     private readonly TradingChartRenderer _renderer = new();
     private readonly VolumeIndicator _defaultVolumeIndicator = new();
@@ -119,7 +148,8 @@ public class TradingViewChart : Control
     private readonly List<CandlePoint> _renderData = [];
     private readonly HashSet<INotifyPropertyChanged> _subscribedDataItems = [];
     private readonly HashSet<TradingIndicatorItem> _subscribedIndicatorItems = [];
-    private static readonly IReadOnlyList<TradingMarker> EmptyMarkers = Array.Empty<TradingMarker>();
+    private static readonly IReadOnlyList<TradingMarker> EmptyMarkers =
+        Array.Empty<TradingMarker>();
     private static readonly IReadOnlySet<int> EmptyMarkedIndices = new HashSet<int>();
     private INotifyCollectionChanged? _activeSourceNotifier;
     private INotifyCollectionChanged? _markersNotifier;
@@ -175,16 +205,32 @@ public class TradingViewChart : Control
             TooltipTextBrushProperty,
             CrosshairHintModeProperty,
             CrosshairValueModeProperty,
+            ChartTitleProperty,
             XAxisLabelFormatProperty,
-            SupportedIndicatorsProperty);
+            SupportedIndicatorsProperty
+        );
 
-        CandleSourceProperty.Changed.AddClassHandler<TradingViewChart>((chart, _) => chart.OnCandleSourceChanged());
-        PriceSourceProperty.Changed.AddClassHandler<TradingViewChart>((chart, _) => chart.OnPriceSourceChanged());
-        MarkersProperty.Changed.AddClassHandler<TradingViewChart>((chart, _) => chart.OnMarkersChanged());
-        IndicatorItemsProperty.Changed.AddClassHandler<TradingViewChart>((chart, _) => chart.OnIndicatorItemsChanged());
-        VisibleStartTimeProperty.Changed.AddClassHandler<TradingViewChart>((chart, args) => chart.OnVisibleStartTimeChanged((DateTimeOffset?)args.NewValue));
-        VisibleEndTimeProperty.Changed.AddClassHandler<TradingViewChart>((chart, args) => chart.OnVisibleEndTimeChanged((DateTimeOffset?)args.NewValue));
-        ZoomRatioProperty.Changed.AddClassHandler<TradingViewChart>((chart, args) => chart.OnZoomRatioChanged((double)args.NewValue!));
+        CandleSourceProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, _) => chart.OnCandleSourceChanged()
+        );
+        PriceSourceProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, _) => chart.OnPriceSourceChanged()
+        );
+        MarkersProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, _) => chart.OnMarkersChanged()
+        );
+        IndicatorItemsProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, _) => chart.OnIndicatorItemsChanged()
+        );
+        VisibleStartTimeProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, args) => chart.OnVisibleStartTimeChanged((DateTimeOffset?)args.NewValue)
+        );
+        VisibleEndTimeProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, args) => chart.OnVisibleEndTimeChanged((DateTimeOffset?)args.NewValue)
+        );
+        ZoomRatioProperty.Changed.AddClassHandler<TradingViewChart>(
+            (chart, args) => chart.OnZoomRatioChanged((double)args.NewValue!)
+        );
     }
 
     public TradingViewChart()
@@ -295,6 +341,12 @@ public class TradingViewChart : Control
     {
         get => GetValue(XAxisLabelFormatProperty);
         set => SetValue(XAxisLabelFormatProperty, value);
+    }
+
+    public string ChartTitle
+    {
+        get => GetValue(ChartTitleProperty);
+        set => SetValue(ChartTitleProperty, value);
     }
 
     public DateTimeOffset? HoveredTime
@@ -468,8 +520,18 @@ public class TradingViewChart : Control
     {
         base.OnPropertyChanged(change);
 
-        if (string.Equals(change.Property.Name, nameof(ActualThemeVariant), StringComparison.Ordinal) ||
-            string.Equals(change.Property.Name, "RequestedThemeVariant", StringComparison.Ordinal))
+        if (
+            string.Equals(
+                change.Property.Name,
+                nameof(ActualThemeVariant),
+                StringComparison.Ordinal
+            )
+            || string.Equals(
+                change.Property.Name,
+                "RequestedThemeVariant",
+                StringComparison.Ordinal
+            )
+        )
         {
             InvalidateVisual();
         }
@@ -479,7 +541,8 @@ public class TradingViewChart : Control
     {
         base.OnPointerMoved(e);
         var position = e.GetPosition(this);
-        var pointerActuallyMoved = !_hasPhysicalPointerPosition || HasPointerMoved(position, _lastPhysicalPointerPosition);
+        var pointerActuallyMoved =
+            !_hasPhysicalPointerPosition || HasPointerMoved(position, _lastPhysicalPointerPosition);
         _lastPhysicalPointerPosition = position;
         _hasPhysicalPointerPosition = true;
 
@@ -657,7 +720,10 @@ public class TradingViewChart : Control
         InvalidateVisual();
     }
 
-    private void OnIndicatorItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    private void OnIndicatorItemsCollectionChanged(
+        object? sender,
+        NotifyCollectionChangedEventArgs e
+    )
     {
         RebuildIndicatorSubscriptions();
         _indicatorCacheDirty = true;
@@ -701,7 +767,11 @@ public class TradingViewChart : Control
         }
 
         var index = FindNearestIndex(value.Value);
-        var nextVisibleStartIndex = Math.Clamp(index, 0, Math.Max(0, _renderData.Count - _visibleCount));
+        var nextVisibleStartIndex = Math.Clamp(
+            index,
+            0,
+            Math.Max(0, _renderData.Count - _visibleCount)
+        );
         if (nextVisibleStartIndex == _visibleStartIndex)
         {
             return;
@@ -726,7 +796,11 @@ public class TradingViewChart : Control
         }
 
         var index = FindNearestIndex(value.Value);
-        var nextVisibleStartIndex = Math.Clamp(index - _visibleCount + 1, 0, Math.Max(0, _renderData.Count - _visibleCount));
+        var nextVisibleStartIndex = Math.Clamp(
+            index - _visibleCount + 1,
+            0,
+            Math.Max(0, _renderData.Count - _visibleCount)
+        );
         if (nextVisibleStartIndex == _visibleStartIndex)
         {
             return;
@@ -769,7 +843,9 @@ public class TradingViewChart : Control
         var nextCount = GetActiveSourceCount();
         if (e.Action == NotifyCollectionChangedAction.Add && nextCount > 0)
         {
-            var wasPinnedToRight = _visibleCount <= 0 || _visibleStartIndex + _visibleCount >= nextCount - (e.NewItems?.Count ?? 0);
+            var wasPinnedToRight =
+                _visibleCount <= 0
+                || _visibleStartIndex + _visibleCount >= nextCount - (e.NewItems?.Count ?? 0);
             if (_visibleCount <= 0)
             {
                 ResetViewport(nextCount);
@@ -789,7 +865,14 @@ public class TradingViewChart : Control
         else if (e.Action == NotifyCollectionChangedAction.Replace)
         {
             _crosshairIndex = nextCount <= 0 ? -1 : Math.Clamp(_crosshairIndex, 0, nextCount - 1);
-            _visibleStartIndex = nextCount <= 0 ? 0 : Math.Clamp(_visibleStartIndex, 0, Math.Max(0, nextCount - Math.Max(1, _visibleCount)));
+            _visibleStartIndex =
+                nextCount <= 0
+                    ? 0
+                    : Math.Clamp(
+                        _visibleStartIndex,
+                        0,
+                        Math.Max(0, nextCount - Math.Max(1, _visibleCount))
+                    );
             PublishViewportBindings();
         }
         else
@@ -813,7 +896,10 @@ public class TradingViewChart : Control
             _subscribedDataItems.Clear();
             foreach (var item in EnumerateActiveSourceItems())
             {
-                if (item is INotifyPropertyChanged propertyChanged && _subscribedDataItems.Add(propertyChanged))
+                if (
+                    item is INotifyPropertyChanged propertyChanged
+                    && _subscribedDataItems.Add(propertyChanged)
+                )
                 {
                     propertyChanged.PropertyChanged += OnSourceItemPropertyChanged;
                 }
@@ -826,7 +912,10 @@ public class TradingViewChart : Control
         {
             foreach (var item in e.OldItems)
             {
-                if (item is INotifyPropertyChanged propertyChanged && _subscribedDataItems.Remove(propertyChanged))
+                if (
+                    item is INotifyPropertyChanged propertyChanged
+                    && _subscribedDataItems.Remove(propertyChanged)
+                )
                 {
                     propertyChanged.PropertyChanged -= OnSourceItemPropertyChanged;
                 }
@@ -840,7 +929,10 @@ public class TradingViewChart : Control
 
         foreach (var item in e.NewItems)
         {
-            if (item is INotifyPropertyChanged propertyChanged && _subscribedDataItems.Add(propertyChanged))
+            if (
+                item is INotifyPropertyChanged propertyChanged
+                && _subscribedDataItems.Add(propertyChanged)
+            )
             {
                 propertyChanged.PropertyChanged += OnSourceItemPropertyChanged;
             }
@@ -868,8 +960,16 @@ public class TradingViewChart : Control
         }
         else
         {
-            _crosshairIndex = _renderData.Count <= 0 ? -1 : Math.Clamp(_crosshairIndex, 0, _renderData.Count - 1);
-            _visibleStartIndex = _renderData.Count <= 0 ? 0 : Math.Clamp(_visibleStartIndex, 0, Math.Max(0, _renderData.Count - Math.Max(1, _visibleCount)));
+            _crosshairIndex =
+                _renderData.Count <= 0 ? -1 : Math.Clamp(_crosshairIndex, 0, _renderData.Count - 1);
+            _visibleStartIndex =
+                _renderData.Count <= 0
+                    ? 0
+                    : Math.Clamp(
+                        _visibleStartIndex,
+                        0,
+                        Math.Max(0, _renderData.Count - Math.Max(1, _visibleCount))
+                    );
             PublishViewportBindings();
         }
 
@@ -886,7 +986,10 @@ public class TradingViewChart : Control
 
         foreach (var item in EnumerateActiveSourceItems())
         {
-            if (item is INotifyPropertyChanged propertyChanged && _subscribedDataItems.Add(propertyChanged))
+            if (
+                item is INotifyPropertyChanged propertyChanged
+                && _subscribedDataItems.Add(propertyChanged)
+            )
             {
                 propertyChanged.PropertyChanged += OnSourceItemPropertyChanged;
             }
@@ -976,7 +1079,10 @@ public class TradingViewChart : Control
     private void OnIndicatorsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         RebuildLegacyIndicatorItems();
-        var activeIndicators = new HashSet<object>(_legacyIndicatorItems.Cast<object>()) { _defaultVolumeIndicator };
+        var activeIndicators = new HashSet<object>(_legacyIndicatorItems.Cast<object>())
+        {
+            _defaultVolumeIndicator,
+        };
         var staleKeys = new List<object>();
         foreach (var key in _panelWeights.Keys)
         {
@@ -1037,15 +1143,17 @@ public class TradingViewChart : Control
             for (var i = 0; i < PriceSource.Count; i++)
             {
                 var point = PriceSource[i];
-                _renderData.Add(new CandlePoint
-                {
-                    Time = point.Time,
-                    Open = point.Price,
-                    High = point.Price,
-                    Low = point.Price,
-                    Close = point.Price,
-                    PreviousClose = i > 0 ? PriceSource[i - 1].Price : point.Price
-                });
+                _renderData.Add(
+                    new CandlePoint
+                    {
+                        Time = point.Time,
+                        Open = point.Price,
+                        High = point.Price,
+                        Low = point.Price,
+                        Close = point.Price,
+                        PreviousClose = i > 0 ? PriceSource[i - 1].Price : point.Price,
+                    }
+                );
             }
         }
         else
@@ -1108,7 +1216,8 @@ public class TradingViewChart : Control
             Markers = Markers ?? EmptyMarkers,
             HiddenSeries = _hiddenSeries,
             VisibleStartIndex = _visibleStartIndex,
-            VisibleCount = _visibleCount == 0 && data.Count > 0 ? data.Count : Math.Max(0, _visibleCount),
+            VisibleCount =
+                _visibleCount == 0 && data.Count > 0 ? data.Count : Math.Max(0, _visibleCount),
             CrosshairIndex = _crosshairIndex >= 0 ? _crosshairIndex : Math.Max(0, data.Count - 1),
             ActivePanelIndex = _activePanelIndex,
             ShowCrosshair = _crosshairIndex >= 0,
@@ -1118,17 +1227,42 @@ public class TradingViewChart : Control
             CrosshairHintMode = CrosshairHintMode,
             CrosshairValueMode = CrosshairValueMode,
             TooltipCorner = _tooltipCorner,
-            XAxisLabelFormat = string.IsNullOrWhiteSpace(XAxisLabelFormat) ? "yyyy-MM-dd" : XAxisLabelFormat,
-            BackgroundColor = ChartBackgroundBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(11, 18, 32) : new SkiaSharp.SKColor(248, 250, 252)),
-            GridColor = GridLineBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(71, 95, 122, 100) : new SkiaSharp.SKColor(51, 65, 85, 32)),
-            TextColor = AxisTextBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(226, 232, 240) : new SkiaSharp.SKColor(15, 23, 42)),
-            TooltipBackgroundColor = TooltipBackgroundBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(30, 41, 59, 242) : new SkiaSharp.SKColor(255, 255, 255, 242)),
-            TooltipTextColor = TooltipTextBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(248, 250, 252) : new SkiaSharp.SKColor(15, 23, 42)),
-            UpColor = UpBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(255, 95, 122) : new SkiaSharp.SKColor(225, 29, 72)),
-            DownColor = DownBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(52, 211, 153) : new SkiaSharp.SKColor(22, 163, 74)),
-            LimitUpColor = LimitUpBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(255, 45, 85) : new SkiaSharp.SKColor(185, 28, 28)),
-            LimitDownColor = LimitDownBrush.ToSkColor(isDark ? new SkiaSharp.SKColor(16, 185, 129) : new SkiaSharp.SKColor(22, 101, 52)),
-            MarkedIndices = EmptyMarkedIndices
+            ChartTitle = string.IsNullOrWhiteSpace(ChartTitle) ? "PRICE" : ChartTitle,
+            XAxisLabelFormat = string.IsNullOrWhiteSpace(XAxisLabelFormat)
+                ? "yyyy-MM-dd"
+                : XAxisLabelFormat,
+            BackgroundColor = ChartBackgroundBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(11, 18, 32) : new SkiaSharp.SKColor(248, 250, 252)
+            ),
+            GridColor = GridLineBrush.ToSkColor(
+                isDark
+                    ? new SkiaSharp.SKColor(71, 95, 122, 100)
+                    : new SkiaSharp.SKColor(51, 65, 85, 32)
+            ),
+            TextColor = AxisTextBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(226, 232, 240) : new SkiaSharp.SKColor(15, 23, 42)
+            ),
+            TooltipBackgroundColor = TooltipBackgroundBrush.ToSkColor(
+                isDark
+                    ? new SkiaSharp.SKColor(30, 41, 59, 242)
+                    : new SkiaSharp.SKColor(255, 255, 255, 242)
+            ),
+            TooltipTextColor = TooltipTextBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(248, 250, 252) : new SkiaSharp.SKColor(15, 23, 42)
+            ),
+            UpColor = UpBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(255, 95, 122) : new SkiaSharp.SKColor(225, 29, 72)
+            ),
+            DownColor = DownBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(52, 211, 153) : new SkiaSharp.SKColor(22, 163, 74)
+            ),
+            LimitUpColor = LimitUpBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(255, 45, 85) : new SkiaSharp.SKColor(185, 28, 28)
+            ),
+            LimitDownColor = LimitDownBrush.ToSkColor(
+                isDark ? new SkiaSharp.SKColor(16, 185, 129) : new SkiaSharp.SKColor(22, 101, 52)
+            ),
+            MarkedIndices = EmptyMarkedIndices,
         };
     }
 
@@ -1159,13 +1293,19 @@ public class TradingViewChart : Control
         var plotBounds = targetPanel.Value.BodyBounds;
         var slotWidth = plotBounds.Width / Math.Max(1, _visibleCount);
         var relativeIndex = (int)Math.Floor((position.X - plotBounds.X) / Math.Max(1d, slotWidth));
-        var nextCrosshairIndex = Math.Clamp(_visibleStartIndex + relativeIndex, 0, _renderData.Count - 1);
+        var nextCrosshairIndex = Math.Clamp(
+            _visibleStartIndex + relativeIndex,
+            0,
+            _renderData.Count - 1
+        );
         var previousTooltipCorner = _tooltipCorner;
         UpdateTooltipCorner(layout, nextCrosshairIndex);
 
-        if (nextCrosshairIndex == _crosshairIndex &&
-            previousTooltipCorner == _tooltipCorner &&
-            _activePanelIndex == targetPanel.Value.Index)
+        if (
+            nextCrosshairIndex == _crosshairIndex
+            && previousTooltipCorner == _tooltipCorner
+            && _activePanelIndex == targetPanel.Value.Index
+        )
         {
             return;
         }
@@ -1197,7 +1337,11 @@ public class TradingViewChart : Control
         }
 
         var deltaBars = (int)Math.Round((position.X - _panStartPosition.X) / slotWidth);
-        var nextVisibleStartIndex = Math.Clamp(_panStartVisibleIndex - deltaBars, 0, _renderData.Count - _visibleCount);
+        var nextVisibleStartIndex = Math.Clamp(
+            _panStartVisibleIndex - deltaBars,
+            0,
+            _renderData.Count - _visibleCount
+        );
         if (nextVisibleStartIndex == _visibleStartIndex)
         {
             return;
@@ -1216,9 +1360,10 @@ public class TradingViewChart : Control
         }
 
         var oldCount = Math.Max(1, _visibleCount);
-        var nextCount = delta > 0d
-            ? Math.Max(10, oldCount - Math.Max(2, oldCount / 8))
-            : Math.Min(_renderData.Count, oldCount + Math.Max(2, oldCount / 8));
+        var nextCount =
+            delta > 0d
+                ? Math.Max(10, oldCount - Math.Max(2, oldCount / 8))
+                : Math.Min(_renderData.Count, oldCount + Math.Max(2, oldCount / 8));
 
         if (nextCount == oldCount)
         {
@@ -1228,13 +1373,29 @@ public class TradingViewChart : Control
         var layout = GetCurrentLayout();
         var plotBounds = layout.Panels[0].BodyBounds;
 
-        var anchorRelative = Math.Clamp((pointer.X - plotBounds.X) / Math.Max(1d, plotBounds.Width), 0d, 1d);
-        var anchorIndex = Math.Clamp(_visibleStartIndex + (int)Math.Round(anchorRelative * (oldCount - 1)), 0, _renderData.Count - 1);
+        var anchorRelative = Math.Clamp(
+            (pointer.X - plotBounds.X) / Math.Max(1d, plotBounds.Width),
+            0d,
+            1d
+        );
+        var anchorIndex = Math.Clamp(
+            _visibleStartIndex + (int)Math.Round(anchorRelative * (oldCount - 1)),
+            0,
+            _renderData.Count - 1
+        );
         var proposedStart = anchorIndex - (int)Math.Round(anchorRelative * (nextCount - 1));
 
-        var nextVisibleStartIndex = Math.Clamp(proposedStart, 0, Math.Max(0, _renderData.Count - nextCount));
+        var nextVisibleStartIndex = Math.Clamp(
+            proposedStart,
+            0,
+            Math.Max(0, _renderData.Count - nextCount)
+        );
         var nextCrosshairIndex = Math.Clamp(anchorIndex, 0, _renderData.Count - 1);
-        if (nextCount == _visibleCount && nextVisibleStartIndex == _visibleStartIndex && nextCrosshairIndex == _crosshairIndex)
+        if (
+            nextCount == _visibleCount
+            && nextVisibleStartIndex == _visibleStartIndex
+            && nextCrosshairIndex == _crosshairIndex
+        )
         {
             return;
         }
@@ -1292,17 +1453,17 @@ public class TradingViewChart : Control
         var legendTarget = splitter.HasValue || _isPanning ? null : TryGetLegendHitTarget(position);
         var hoveredIndicator = default(ITradingIndicator);
         var hoveredSeriesName = legendTarget?.SeriesName;
-        var cursor = _isPanning
-            ? HandCursor
-            : splitter.HasValue
-            ? VerticalResizeCursor
-            : legendTarget.HasValue
-                ? HandCursor
-                : DefaultArrowCursor;
+        var cursor =
+            _isPanning ? HandCursor
+            : splitter.HasValue ? VerticalResizeCursor
+            : legendTarget.HasValue ? HandCursor
+            : DefaultArrowCursor;
 
-        if (_hoveredIndicator == hoveredIndicator &&
-            _hoveredSeriesName == hoveredSeriesName &&
-            Equals(Cursor, cursor))
+        if (
+            _hoveredIndicator == hoveredIndicator
+            && _hoveredSeriesName == hoveredSeriesName
+            && Equals(Cursor, cursor)
+        )
         {
             return;
         }
@@ -1337,10 +1498,7 @@ public class TradingViewChart : Control
             _indicatorActionMenu.Close();
         }
 
-        var hideShowItem = new MenuItem
-        {
-            Header = item.IsHidden ? "Show" : "Hide"
-        };
+        var hideShowItem = new MenuItem { Header = item.IsHidden ? "Show" : "Hide" };
         hideShowItem.Click += (_, _) =>
         {
             item.IsHidden = !item.IsHidden;
@@ -1354,22 +1512,22 @@ public class TradingViewChart : Control
         var editItem = new MenuItem
         {
             Header = "Edit",
-            IsEnabled = item.CanEdit && IndicatorEditor is not null
+            IsEnabled = item.CanEdit && IndicatorEditor is not null,
         };
         editItem.Click += async (_, _) => await EditIndicatorAsync(item, isNewItem: false);
 
         var deleteItem = new MenuItem
         {
             Header = "Delete",
-            IsEnabled = CanDeleteIndicatorItem(item)
+            IsEnabled = CanDeleteIndicatorItem(item),
         };
         deleteItem.Click += (_, _) => DeleteIndicatorItem(item);
 
         _indicatorActionMenu = new ContextMenu
         {
-            Placement = PlacementMode.AnchorAndGravity,
+            Placement = PlacementMode.BottomEdgeAlignedLeft,
             PlacementRect = new Rect(_lastPointerPosition, new Size(1d, 1d)),
-            ItemsSource = new[] { hideShowItem, editItem, deleteItem }
+            ItemsSource = new[] { hideShowItem, editItem, deleteItem },
         };
         _indicatorActionMenu.Open(this);
     }
@@ -1378,13 +1536,18 @@ public class TradingViewChart : Control
     {
         var draft = item.Clone();
         var title = isNewItem ? $"Add {draft.DisplayName}" : $"Edit {draft.DisplayName}";
-        if (IndicatorEditor is null ||
-            !await IndicatorEditor.EditAsync(this, new TradingIndicatorEditorRequest
-            {
-                Title = title,
-                IsNewItem = isNewItem,
-                Item = draft
-            }))
+        if (
+            IndicatorEditor is null
+            || !await IndicatorEditor.EditAsync(
+                this,
+                new TradingIndicatorEditorRequest
+                {
+                    Title = title,
+                    IsNewItem = isNewItem,
+                    Item = draft,
+                }
+            )
+        )
         {
             return;
         }
@@ -1420,16 +1583,18 @@ public class TradingViewChart : Control
             return;
         }
 
-        var menu = new ContextMenu();
+        var menu = new ContextMenu
+        {
+            Placement = PlacementMode.BottomEdgeAlignedLeft,
+            PlacementRect = new Rect(_lastPointerPosition, new Size(1d, 1d)),
+        };
         var items = new List<MenuItem>(templates.Count);
         for (var i = 0; i < templates.Count; i++)
         {
             var template = templates[i];
-            var menuItem = new MenuItem
-            {
-                Header = template.DisplayName
-            };
-            menuItem.Click += async (_, _) => await EditIndicatorAsync(template.CreateDefaultItem(), isNewItem: true);
+            var menuItem = new MenuItem { Header = template.DisplayName };
+            menuItem.Click += async (_, _) =>
+                await EditIndicatorAsync(template.CreateDefaultItem(), isNewItem: true);
             items.Add(menuItem);
         }
 
@@ -1476,7 +1641,8 @@ public class TradingViewChart : Control
             }
 
             var slotWidth = panel.BodyBounds.Width / Math.Max(1, _visibleCount);
-            var relativeIndex = (int)Math.Floor((position.X - panel.BodyBounds.X) / Math.Max(1d, slotWidth));
+            var relativeIndex = (int)
+                Math.Floor((position.X - panel.BodyBounds.X) / Math.Max(1d, slotWidth));
             return Math.Clamp(_visibleStartIndex + relativeIndex, 0, _renderData.Count - 1);
         }
 
@@ -1490,13 +1656,15 @@ public class TradingViewChart : Control
             return;
         }
 
-        var parameter = PointClickCommandParameter ?? new TradingChartPointClickInfo
-        {
-            Index = index,
-            Time = _renderData[index].Time,
-            Candle = _renderData[index],
-            SourceItem = GetActiveSourceItem(index)
-        };
+        var parameter =
+            PointClickCommandParameter
+            ?? new TradingChartPointClickInfo
+            {
+                Index = index,
+                Time = _renderData[index].Time,
+                Candle = _renderData[index],
+                SourceItem = GetActiveSourceItem(index),
+            };
 
         if (PointClickCommand.CanExecute(parameter))
         {
@@ -1541,9 +1709,16 @@ public class TradingViewChart : Control
         EnsureIndicatorCache();
         var size = Bounds.Size;
         var visiblePanels = GetVisiblePanelEntries();
-        if (_cachedLayout is null || _cachedLayoutSize != size || _cachedVisibleSubCount != visiblePanels.Count - 1)
+        if (
+            _cachedLayout is null
+            || _cachedLayoutSize != size
+            || _cachedVisibleSubCount != visiblePanels.Count - 1
+        )
         {
-            _cachedLayout = TradingChartLayoutCalculator.Calculate(size, BuildPanelWeights(visiblePanels));
+            _cachedLayout = TradingChartLayoutCalculator.Calculate(
+                size,
+                BuildPanelWeights(visiblePanels)
+            );
             _cachedLayoutSize = size;
             _cachedVisibleSubCount = visiblePanels.Count - 1;
         }
@@ -1556,8 +1731,14 @@ public class TradingViewChart : Control
         var indicatorItems = GetIndicatorItems();
         for (var i = 0; i < indicatorItems.Count; i++)
         {
-            if (indicatorItems[i].Pane == TradingIndicatorPane.Sub &&
-                string.Equals(indicatorItems[i].Id, _defaultVolumeIndicator.Id, StringComparison.OrdinalIgnoreCase))
+            if (
+                indicatorItems[i].Pane == TradingIndicatorPane.Sub
+                && string.Equals(
+                    indicatorItems[i].Id,
+                    _defaultVolumeIndicator.Id,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            )
             {
                 return true;
             }
@@ -1566,7 +1747,12 @@ public class TradingViewChart : Control
         return false;
     }
 
-    private void AddIndicatorSnapshot(TradingIndicatorItem? item, ITradingIndicator indicator, object ownerKey, IReadOnlyList<CandlePoint> data)
+    private void AddIndicatorSnapshot(
+        TradingIndicatorItem? item,
+        ITradingIndicator indicator,
+        object ownerKey,
+        IReadOnlyList<CandlePoint> data
+    )
     {
         var result = indicator.Calculate(data);
         _indicatorCache[indicator] = result;
@@ -1576,7 +1762,7 @@ public class TradingViewChart : Control
             Item = item,
             Indicator = indicator,
             OwnerKey = ownerKey,
-            Result = result
+            Result = result,
         };
 
         if (indicator.Pane == TradingIndicatorPane.Sub)
@@ -1700,7 +1886,10 @@ public class TradingViewChart : Control
 
         var splitter = layout.Splitters[_activeSplitterIndex];
         var visiblePanels = GetVisiblePanelEntries();
-        if (splitter.UpperPanelIndex >= visiblePanels.Count || splitter.LowerPanelIndex >= visiblePanels.Count)
+        if (
+            splitter.UpperPanelIndex >= visiblePanels.Count
+            || splitter.LowerPanelIndex >= visiblePanels.Count
+        )
         {
             return;
         }
@@ -1711,13 +1900,21 @@ public class TradingViewChart : Control
             availablePanelHeight += layout.Panels[i].Bounds.Height;
         }
 
-        var upperMin = splitter.UpperPanelIndex == 0 && visiblePanels.Count > 1
-            ? Math.Min(availablePanelHeight * 0.5d, Math.Max(40d, availablePanelHeight - ((visiblePanels.Count - 1) * 40d)))
-            : 40d;
+        var upperMin =
+            splitter.UpperPanelIndex == 0 && visiblePanels.Count > 1
+                ? Math.Min(
+                    availablePanelHeight * 0.5d,
+                    Math.Max(40d, availablePanelHeight - ((visiblePanels.Count - 1) * 40d))
+                )
+                : 40d;
         var lowerMin = 40d;
         var pairTotal = _resizeUpperStartHeight + _resizeLowerStartHeight;
         var delta = position.Y - _resizeStartY;
-        var upperHeight = Math.Clamp(_resizeUpperStartHeight + delta, upperMin, pairTotal - lowerMin);
+        var upperHeight = Math.Clamp(
+            _resizeUpperStartHeight + delta,
+            upperMin,
+            pairTotal - lowerMin
+        );
         var lowerHeight = pairTotal - upperHeight;
         var upperKey = visiblePanels[splitter.UpperPanelIndex].Key;
         _panelWeights[upperKey] = Math.Max(1d, upperHeight);
@@ -1789,10 +1986,18 @@ public class TradingViewChart : Control
 
         var oldCount = Math.Max(1, _visibleCount);
         var anchorIndex = Math.Clamp(_visibleStartIndex + (oldCount / 2), 0, _renderData.Count - 1);
-        var nextVisibleStartIndex = Math.Clamp(anchorIndex - (nextVisibleCount / 2), 0, Math.Max(0, _renderData.Count - nextVisibleCount));
+        var nextVisibleStartIndex = Math.Clamp(
+            anchorIndex - (nextVisibleCount / 2),
+            0,
+            Math.Max(0, _renderData.Count - nextVisibleCount)
+        );
         _visibleCount = nextVisibleCount;
         _visibleStartIndex = nextVisibleStartIndex;
-        _crosshairIndex = Math.Clamp(_crosshairIndex < 0 ? anchorIndex : _crosshairIndex, 0, _renderData.Count - 1);
+        _crosshairIndex = Math.Clamp(
+            _crosshairIndex < 0 ? anchorIndex : _crosshairIndex,
+            0,
+            _renderData.Count - 1
+        );
         PublishViewportBindings();
         InvalidateVisual();
     }
@@ -1825,12 +2030,17 @@ public class TradingViewChart : Control
         try
         {
             _isUpdatingViewportBindings = true;
-            DateTimeOffset? start = _renderData.Count > 0 && _visibleCount > 0 && _visibleStartIndex >= 0 && _visibleStartIndex < _renderData.Count
-                ? _renderData[_visibleStartIndex].Time
-                : null;
-            var endIndex = _renderData.Count > 0 && _visibleCount > 0
-                ? Math.Clamp(_visibleStartIndex + _visibleCount - 1, 0, _renderData.Count - 1)
-                : -1;
+            DateTimeOffset? start =
+                _renderData.Count > 0
+                && _visibleCount > 0
+                && _visibleStartIndex >= 0
+                && _visibleStartIndex < _renderData.Count
+                    ? _renderData[_visibleStartIndex].Time
+                    : null;
+            var endIndex =
+                _renderData.Count > 0 && _visibleCount > 0
+                    ? Math.Clamp(_visibleStartIndex + _visibleCount - 1, 0, _renderData.Count - 1)
+                    : -1;
             DateTimeOffset? end = endIndex >= 0 ? _renderData[endIndex].Time : null;
 
             SetCurrentValue(VisibleStartTimeProperty, start);

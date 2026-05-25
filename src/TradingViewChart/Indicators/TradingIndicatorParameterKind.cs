@@ -5,5 +5,5 @@ public enum TradingIndicatorParameterKind
     Integer,
     Double,
     Boolean,
-    Text
+    Text,
 }

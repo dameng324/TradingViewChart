@@ -28,6 +28,7 @@ internal sealed class TradingChartRenderModel
     public required CrosshairHintMode CrosshairHintMode { get; init; }
     public required CrosshairValueMode CrosshairValueMode { get; init; }
     public required TradingTooltipCorner TooltipCorner { get; init; }
+    public required string ChartTitle { get; init; }
     public required string XAxisLabelFormat { get; init; }
     public required SKColor BackgroundColor { get; init; }
     public required SKColor GridColor { get; init; }
@@ -57,29 +58,34 @@ internal sealed class TradingIndicatorSnapshot
 
 internal readonly record struct TradingSeriesKey(object OwnerKey, string SeriesName);
 
-internal readonly record struct TradingLegendHitTarget(TradingIndicatorItem? Item, object OwnerKey, string? SeriesName, TradingLegendAction Action);
+internal readonly record struct TradingLegendHitTarget(
+    TradingIndicatorItem? Item,
+    object OwnerKey,
+    string? SeriesName,
+    TradingLegendAction Action
+);
 
 internal enum TradingLegendAction
 {
     ToggleSeries,
-    IndicatorMenu
+    IndicatorMenu,
 }
 
 internal readonly record struct TradingOverlayHitTarget(TradingOverlayAction Action);
 
 internal enum TradingOverlayAction
 {
-    AddIndicator
+    AddIndicator,
 }
 
 internal enum TradingChartSeriesMode
 {
     Candle,
-    PriceLine
+    PriceLine,
 }
 
 internal enum TradingTooltipCorner
 {
     LeftTop,
-    RightTop
+    RightTop,
 }

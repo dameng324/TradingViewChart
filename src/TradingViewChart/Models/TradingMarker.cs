@@ -8,13 +8,13 @@ public enum TradingMarkerShape
     DownArrow,
     Circle,
     Triangle,
-    Star
+    Star,
 }
 
 public enum TradingMarkerPlacement
 {
     Above,
-    Below
+    Below,
 }
 
 public sealed class TradingMarker

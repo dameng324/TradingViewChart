@@ -10,7 +10,7 @@ public sealed class MaIndicator : ITradingIndicator
         Color.Parse("#F59E0B"),
         Color.Parse("#60A5FA"),
         Color.Parse("#A78BFA"),
-        Color.Parse("#34D399")
+        Color.Parse("#34D399"),
     ];
 
     public MaIndicator(params int[] periods)
@@ -51,10 +51,13 @@ public sealed class MaIndicator : ITradingIndicator
                 }
             }
 
-            series.Add(new TradingIndicatorSeries(
-                $"MA{period}",
-                values,
-                DefaultPalette[i % DefaultPalette.Length]));
+            series.Add(
+                new TradingIndicatorSeries(
+                    $"MA{period}",
+                    values,
+                    DefaultPalette[i % DefaultPalette.Length]
+                )
+            );
         }
 
         return new TradingIndicatorResult(series);
@@ -66,7 +69,8 @@ public sealed class MaIndicator : ITradingIndicator
 
         foreach (var series in result.Series)
         {
-            var value = dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
+            var value =
+                dataIndex >= 0 && dataIndex < series.Values.Count ? series.Values[dataIndex] : null;
             parts.Add(value.HasValue ? $"{series.Name}: {value.Value:F2}" : $"{series.Name}: --");
         }
 
