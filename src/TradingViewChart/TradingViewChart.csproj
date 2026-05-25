@@ -3,6 +3,16 @@
     <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>TradingViewChart</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>dameng324</Authors>
+    <Description>Avalonia trading chart control with bindable viewport, zoom, markers, indicators, and point-click commands.</Description>
+    <PackageTags>avalonia;chart;trading;financial-chart;indicator;skia</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/dameng324/TradingViewChart</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/dameng324/TradingViewChart</PackageProjectUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,5 +22,6 @@
 
   <ItemGroup>
     <AvaloniaResource Include="Themes\**\*.xaml" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
   </ItemGroup>
 </Project>

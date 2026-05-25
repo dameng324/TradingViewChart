@@ -1,0 +1,73 @@
+name: Publish packages
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Extract version from tag
+        id: version
+        shell: bash
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+([-.][0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$TAG' is not a supported version tag."
+            exit 1
+          fi
+          echo "value=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Restore local tools
+        run: dotnet tool restore --tool-manifest dotnet-tools.json
+
+      - name: Check CSharpier formatting
+        run: dotnet tool run csharpier check .
+
+      - name: Restore dependencies
+        run: dotnet restore TradingViewChart.slnx
+
+      - name: Build
+        run: dotnet build TradingViewChart.slnx -c Release --no-restore
+
+      - name: Test
+        run: dotnet test tests/TradingViewChart.Tests/TradingViewChart.Tests.csproj -c Release --no-build
+
+      - name: Pack library
+        run: dotnet pack src/TradingViewChart/TradingViewChart.csproj -c Release --no-build -o ./artifacts /p:Version=${{ steps.version.outputs.value }}
+
+      - name: Pack demo tool
+        run: dotnet pack tests/TradingViewChart.Demo/TradingViewChart.Demo.csproj -c Release --no-build -o ./artifacts /p:Version=${{ steps.version.outputs.value }}
+
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: BigDream
+
+      - name: Push to NuGet
+        run: dotnet nuget push "./artifacts/*.nupkg" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: ./artifacts/*.nupkg
